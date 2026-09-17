@@ -363,11 +363,9 @@ input{font:inherit}
 .invcard{margin-top:16px;padding:20px 22px 22px}
 .invcard__title{font-size:clamp(21px,2.6vw,26px);line-height:1.15}
 .invcard__sub{margin-top:5px;font-size:14.5px;color:var(--ink-soft)}
-/* o de baixo é a referência, não a carteira dela: fundo levemente recuado.
-   Aí o realce da legenda inverte, senão sumiria contra o próprio fundo. */
-.invcard--sug{background:var(--surface-2)}
-.invcard--sug .invlegend__row:hover,
-.invcard--sug .invchart.is-hover .invlegend__row.is-on{background:var(--surface)}
+/* o seletor das três visões, logo acima do cartão */
+.tabs--views{margin:24px 0 14px;border-top:0;padding-top:0}
+.tabs--views .tab{display:flex;align-items:center;min-height:52px;font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;line-height:1.25}
 /* o anel ocupa metade do cartão e a legenda a outra metade */
 .invchart{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center;margin-top:22px}
 
@@ -405,6 +403,44 @@ input{font:inherit}
 .invlegend__dot{flex:none;width:12px;height:12px;border-radius:4px;background:var(--cat)}
 .invlegend__name{min-width:0;color:var(--ink-soft);overflow-wrap:anywhere}
 .invlegend__pct{margin-left:auto;flex:none;font-family:var(--ff-mono);font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---------- Diferença entre as duas carteiras ---------- */
+/* Tabela, não gráfico: a diferença tem sinal e as partes não somam 100, então
+   não existe fatia de "−30%". Os três números lado a lado é o que responde. O
+   pontinho ao lado do nome repete a cor que a categoria tem nas outras abas. */
+.diffchart{margin-top:20px;--aumentar:#21867A;--diminuir:#B3322A}
+[data-theme="dark"] .diffchart{--aumentar:#5FF5B7;--diminuir:#F08379}
+.difftable__resumo{font-size:15.5px;line-height:1.5;color:var(--ink-soft)}
+.difftable__resumo strong{color:var(--ink);font-family:var(--ff-mono);font-size:17px}
+
+.difftable{width:100%;margin-top:20px;border-collapse:collapse;text-align:right}
+.difftable thead th{padding:0 10px 9px;border-bottom:1px solid var(--line-strong);font-family:var(--ff-mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.difftable thead th:first-child{text-align:left;padding-left:2px}
+.difftable thead th:last-child{padding-right:2px}
+
+.difftable tbody tr:not(.difftable__group):hover{background:var(--surface-2)}
+.difftable td,.difftable tbody th{padding:9px 10px;border-top:1px solid var(--line);font-family:var(--ff-mono);font-size:14.5px;font-variant-numeric:tabular-nums}
+/* as colunas de número têm largura fixa; o nome fica com o resto */
+.difftable td{width:108px}
+.difftable td:last-child{width:158px}
+
+/* a faixa de RF / RV separa os dois blocos sem virar mais uma linha de dados */
+.difftable__group th{padding:20px 2px 8px;border-top:0;text-align:left;font-family:var(--ff-display);font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--ink)}
+.difftable__group .invlegend__abbr{margin-right:9px;vertical-align:1px}
+.difftable tbody:first-of-type .difftable__group th{padding-top:12px}
+
+/* célula de tabela de verdade (nada de display:flex aqui, senão a linha sai
+   do layout da tabela e as colunas desalinham) */
+.difftable__cat{text-align:left;padding-left:2px!important;font-family:var(--ff-body)!important;font-weight:400;color:var(--ink-soft);overflow-wrap:anywhere}
+.difftable__dot{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--cat);margin-right:9px;vertical-align:-1px}
+/* a palavra é que diz o que fazer; a cor só ajuda a achar rápido quem está
+   fora, e por isso nunca aparece sozinha */
+.difftable__falta{padding-right:2px!important;white-space:nowrap}
+.difftable__verbo{font-family:var(--ff-body);font-size:13px;color:var(--ink-soft)}
+.difftable__quanto{margin-left:7px;font-weight:600}
+.difftable__falta--aumentar .difftable__quanto{color:var(--aumentar)}
+.difftable__falta--diminuir .difftable__quanto{color:var(--diminuir)}
+.difftable__falta--ok{font-family:var(--ff-body);font-size:13px;color:var(--muted)}
 
 /* ---------- Footer ---------- */
 footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font-size:13px;color:var(--muted);text-align:center}
@@ -458,6 +494,10 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .allocrow__del{grid-column:3}
   .alloccat__rows{gap:16px}
   .invlegend__row{padding:7px 4px}
+  /* a tabela da diferença aperta as colunas de número em vez de rolar de lado */
+  .difftable td,.difftable tbody th{padding:9px 5px;font-size:13.5px}
+  .difftable thead th{padding:0 5px 9px;font-size:9.5px;letter-spacing:.04em}
+  .difftable__cat{gap:7px;font-size:13.5px}
 }
 @media (max-width:380px){
   .card__body{padding:16px}

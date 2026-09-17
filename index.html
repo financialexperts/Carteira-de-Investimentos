@@ -256,29 +256,40 @@
       </div>
     </div>
 
+    <!-- três jeitos de olhar a mesma carteira; portfolio.js troca o painel -->
+    <div class="tabs tabs--views" role="tablist" aria-label="O que mostrar da carteira">
+      <button class="tab glass" role="tab" type="button" id="pf-tab-minha"
+              aria-controls="pf-pane-minha" aria-selected="true">Sua carteira</button>
+      <button class="tab glass" role="tab" type="button" id="pf-tab-sugerida"
+              aria-controls="pf-pane-sugerida" aria-selected="false" tabindex="-1">Carteira sugerida para o seu perfil</button>
+      <button class="tab glass" role="tab" type="button" id="pf-tab-diferenca"
+              aria-controls="pf-pane-diferenca" aria-selected="false" tabindex="-1">Diferença entre elas</button>
+    </div>
+
     <div class="card invcard">
       <div class="profilecard__head">
         <div>
-          <h2 class="invcard__title">Seus investimentos</h2>
-          <p class="invcard__sub">O que você escolheu para cada categoria.</p>
+          <!-- título e explicação mudam junto com a aba -->
+          <h2 class="invcard__title" id="pf-view-title">Seus investimentos</h2>
+          <p class="invcard__sub" id="pf-view-sub"></p>
         </div>
         <button class="btn btn--ghost glass btn--sm" type="button" id="pf-edit-inv">Editar investimentos</button>
       </div>
-      <!-- gráfico de pizza + legenda, montados por frontend/js/portfolio.js
-           com o que foi salvo na etapa 02 -->
-      <div class="invchart" id="pf-investments"></div>
-    </div>
 
-    <div class="card invcard invcard--sug">
-      <div class="profilecard__head">
-        <div>
-          <h2 class="invcard__title">Sugestão para o seu perfil</h2>
-          <!-- o texto muda conforme o perfil (portfolio.js) -->
-          <p class="invcard__sub" id="pf-suggested-name"></p>
-        </div>
+      <!-- rosca + legenda do que foi salvo na etapa 02 -->
+      <div id="pf-pane-minha" role="tabpanel" aria-labelledby="pf-tab-minha">
+        <div class="invchart" id="pf-investments"></div>
       </div>
-      <!-- mesmo gráfico, com as porcentagens sugeridas de investorProfiles.js -->
-      <div class="invchart" id="pf-suggested"></div>
+
+      <!-- mesma rosca, com as porcentagens sugeridas de investorProfiles.js -->
+      <div id="pf-pane-sugerida" role="tabpanel" aria-labelledby="pf-tab-sugerida" hidden>
+        <div class="invchart" id="pf-suggested"></div>
+      </div>
+
+      <!-- barras pra cada lado do zero: quanto falta ou sobra em cada categoria -->
+      <div id="pf-pane-diferenca" role="tabpanel" aria-labelledby="pf-tab-diferenca" hidden>
+        <div class="diffchart" id="pf-diff"></div>
+      </div>
     </div>
   </section>
 

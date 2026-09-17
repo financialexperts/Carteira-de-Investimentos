@@ -21,6 +21,49 @@
   var grafAluno = null;
   var grafSugerido = null;
 
+  // as três abas. "sub" é a linha de explicação, e a da sugerida depende do
+  // perfil, então é montada na hora (por isso função em vez de texto fixo).
+  var VIEWS = [
+    {
+      key: "minha",
+      title: "Seus investimentos",
+      sub: function () { return "O que você escolheu para cada categoria."; }
+    },
+    {
+      key: "sugerida",
+      title: "Carteira sugerida",
+      sub: function (p) {
+        return "Como a carteira de um perfil " + p.name.toLowerCase() + " costuma ficar.";
+      }
+    },
+    {
+      key: "diferenca",
+      title: "Diferença entre elas",
+      sub: function () {
+        return "O que mudar em cada categoria para chegar na carteira sugerida.";
+      }
+    }
+  ];
+
+  var perfilAtual = null;
+
+  function mostrarView(key) {
+    VIEWS.forEach(function (v) {
+      var aba = document.getElementById("pf-tab-" + v.key);
+      var painel = document.getElementById("pf-pane-" + v.key);
+      var ativa = v.key === key;
+
+      painel.hidden = !ativa;
+      aba.setAttribute("aria-selected", String(ativa));
+      aba.tabIndex = ativa ? 0 : -1;   // Tab entra no seletor, setas andam nele
+
+      if (ativa) {
+        document.getElementById("pf-view-title").textContent = v.title;
+        document.getElementById("pf-view-sub").textContent = v.sub(perfilAtual);
+      }
+    });
+  }
+
   function mount() {
     // os dois botões voltam pro onboarding, cada um na sua etapa
     document.getElementById("pf-change").addEventListener("click", function () {
@@ -28,6 +71,21 @@
     });
     document.getElementById("pf-edit-inv").addEventListener("click", function () {
       if (onEdit) onEdit(2);
+    });
+
+    VIEWS.forEach(function (v, i) {
+      var aba = document.getElementById("pf-tab-" + v.key);
+      aba.addEventListener("click", function () { mostrarView(v.key); });
+      // setas esquerda/direita andam entre as abas, como se espera de um
+      // seletor de verdade
+      aba.addEventListener("keydown", function (e) {
+        var passo = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!passo) return;
+        e.preventDefault();
+        var alvo = VIEWS[(i + passo + VIEWS.length) % VIEWS.length];
+        mostrarView(alvo.key);
+        document.getElementById("pf-tab-" + alvo.key).focus();
+      });
     });
 
     grafAluno = criarGrafico(document.getElementById("pf-investments"), "da carteira");
@@ -249,11 +307,81 @@
     return pct;
   }
 
+  /* ============ diferença entre as duas carteiras ============ */
+  // Aqui é tabela, não gráfico: a diferença tem sinal e as partes não somam
+  // 100, então não existe fatia de "−30%". O que a aluna precisa é ler os três
+  // números lado a lado — o dela, o sugerido e o quanto falta ou sobra.
+  function round1(n) { return Math.round(n * 10) / 10; }
+
+  // A conta é sugerida menos a dela, de propósito: o número responde "o que eu
+  // faço?", não "o que aconteceu?". Positivo é o que falta pôr, negativo é o
+  // que precisa sair — e quem diz isso é a palavra, não o sinal.
+  function diffCellHTML(falta) {
+    if (falta === 0) {
+      return '<td class="difftable__falta difftable__falta--ok">no ponto</td>';
+    }
+    var classe = falta > 0 ? "difftable__falta--aumentar" : "difftable__falta--diminuir";
+    var verbo = falta > 0 ? "aumentar" : "diminuir";
+    return '<td class="difftable__falta ' + classe + '">' +
+      '<span class="difftable__verbo">' + verbo + "</span>" +
+      '<span class="difftable__quanto">' + Investments.pctText(Math.abs(falta)) + "%</span>" +
+      "</td>";
+  }
+
+  function diffGroupHTML(g, pctAluno, pctSug) {
+    var linhas = g.categories.map(function (cat) {
+      var falta = round1(pctSug[cat.key] - pctAluno[cat.key]);
+      return '<tr data-cat="' + cat.key + '">' +
+        '<th scope="row" class="difftable__cat">' +
+          '<span class="difftable__dot" aria-hidden="true"></span>' + Format.esc(cat.name) +
+        "</th>" +
+        "<td>" + Investments.pctText(pctAluno[cat.key]) + "%</td>" +
+        "<td>" + Investments.pctText(pctSug[cat.key]) + "%</td>" +
+        diffCellHTML(falta) +
+        "</tr>";
+    }).join("");
+
+    return "<tbody>" +
+      '<tr class="difftable__group"><th colspan="4" scope="colgroup">' +
+        '<span class="invlegend__abbr">' + Format.esc(g.abbr) + "</span>" +
+        Format.esc(g.name) +
+      "</th></tr>" + linhas + "</tbody>";
+  }
+
+  function diffHTML(pctAluno, pctSug) {
+    // soma do que está fora do lugar, contada uma vez só: o que sobra numa
+    // categoria é exatamente o que falta noutra, então divide por dois
+    var distancia = 0;
+    Classes.list.forEach(function (cat) {
+      distancia += Math.abs(round1(pctAluno[cat.key] - pctSug[cat.key]));
+    });
+    distancia = round1(distancia / 2);
+
+    var resumo = distancia === 0
+      ? "Sua carteira está igualzinha à sugerida para o seu perfil."
+      : "Para chegar na sugerida, <strong>" + Investments.pctText(distancia) +
+        "%</strong> da carteira precisaria mudar de categoria.";
+
+    return '<p class="difftable__resumo">' + resumo + "</p>" +
+      '<table class="difftable">' +
+        "<thead><tr>" +
+          '<th scope="col">Categoria</th>' +
+          '<th scope="col">Sua carteira</th>' +
+          '<th scope="col">Sugerida</th>' +
+          '<th scope="col">Para chegar lá</th>' +
+        "</tr></thead>" +
+        Classes.groups.map(function (g) {
+          return diffGroupHTML(g, pctAluno, pctSug);
+        }).join("") +
+      "</table>";
+  }
+
   // a carteira mostra o perfil escolhido na etapa 01, o gráfico do que a aluna
   // montou na etapa 02 e, embaixo, o gráfico sugerido pro perfil dela.
   function show(user, profile, editCallback) {
     onEdit = editCallback;
     var p = Profiles.byKey(profile.investor_profile);
+    perfilAtual = p;
 
     document.getElementById("pf-name").textContent = p.name;
     document.getElementById("pf-tagline").textContent = p.tagline;
@@ -262,11 +390,14 @@
     document.getElementById("pf-desc").textContent = p.description;
     document.getElementById("pf-examples").textContent = p.examples;
 
-    document.getElementById("pf-suggested-name").textContent =
-      "Como a carteira de um perfil " + p.name.toLowerCase() + " costuma ficar";
+    var doAluno = pctDoAluno(profile);
+    var sugerido = pctSugerido(p);
 
-    grafAluno.render(pctDoAluno(profile), "Sua carteira");
-    grafSugerido.render(pctSugerido(p), "Sugestão para o perfil " + p.name);
+    grafAluno.render(doAluno, "Sua carteira");
+    grafSugerido.render(sugerido, "Sugestão para o perfil " + p.name);
+    document.getElementById("pf-diff").innerHTML = diffHTML(doAluno, sugerido);
+
+    mostrarView("minha");
   }
 
   global.PortfolioView = { mount: mount, show: show };

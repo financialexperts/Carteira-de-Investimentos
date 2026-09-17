@@ -12,9 +12,19 @@ Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css
 
 2. **Etapa 01 — Seu perfil.** Ele escolhe entre **Conservador**, **Moderado** e **Arrojado**. Cada opção mostra só o nome e o nível de risco, num medidor de três barrinhas.
 
-3. **Etapa 02 — Seus investimentos.** Ele informa o **total investido, em reais**, e distribui esse dinheiro entre as categorias. Em cada categoria cabem **até 5 investimentos**, cada um com o nome e o valor, também em reais. A soma precisa fechar exatamente no total informado.
+3. **Etapa 02 — Seus investimentos.** Ele informa o **total investido, em reais**, e distribui esse dinheiro entre as categorias. Cada investimento tem um nome e um valor, também em reais, e não há limite de quantos cabem por categoria. A soma precisa fechar exatamente no total informado.
 
-4. **A carteira.** Duas roscas, uma embaixo da outra: a **dele**, montada na etapa 02, e a **sugerida** para o perfil dele. Os botões "Alterar perfil" e "Editar investimentos" voltam para cada etapa.
+4. **A carteira.** Um seletor com três visões da mesma carteira:
+
+   | Aba | O que mostra |
+   | --- | --- |
+   | **Sua carteira** | A rosca do que ele montou na etapa 02. |
+   | **Carteira sugerida para o seu perfil** | A mesma rosca, com a alocação sugerida para o perfil dele. |
+   | **Diferença entre elas** | Barras para os dois lados de um zero: à esquerda o que falta, à direita o que sobra, em pontos da carteira. |
+
+   Os botões "Alterar perfil" e "Editar investimentos" voltam para cada etapa.
+
+A aba **Diferença** não usa rosca de propósito: a diferença tem sinal e as partes não somam 100, então o que responde a "onde eu estou fora?" é uma barra por categoria saindo de um zero no meio. No topo dela aparece um resumo: quanto da carteira precisaria mudar de categoria para chegar na sugerida.
 
 As duas etapas só aparecem na primeira vez. Depois, o aluno cai direto na carteira.
 
@@ -144,11 +154,9 @@ Sem esse SQL o aluno consegue entrar, mas ao concluir uma etapa aparece "Não de
 
 ## Regras que valem a pena saber
 
-**O limite de 5 por categoria.** Ao chegar no quinto investimento, o botão "Adicionar investimento" trava e avisa o motivo. Está em `MAX_PER_CATEGORY`, no `assetClasses.js`.
-
 **O limitador do total.** A soma dos investimentos nunca passa do total da carteira: o que o aluno digita a mais é cortado no que ainda cabe, com um aviso dizendo quanto era. Se ele **baixar o total** depois de distribuir tudo, aí sim a soma fica maior — nesse caso o sistema não mexe no que ele digitou, mostra em vermelho quanto passou e não deixa concluir. Diminuir o número de alguém é escolha dele, não do sistema.
 
-**Tocar, não só apontar.** Cada fatia e cada linha da legenda são alvos de clique, toque e teclado. No celular não existe "passar o mouse em cima", então o destaque fica aceso até o aluno desmarcar. Os dois gráficos guardam o próprio destaque, sem um mexer no outro.
+**Tocar, não só apontar.** Cada fatia e cada linha da legenda são alvos de clique, toque e teclado. No celular não existe "passar o mouse em cima", então o destaque fica aceso até o aluno desmarcar. As duas roscas guardam o próprio destaque, sem uma mexer na outra. No seletor de abas, as setas do teclado andam entre as visões.
 
 **O que é salvo e quando.** O perfil é salvo ao sair da etapa 01, antes da etapa 02 — assim, se o aluno fechar a página no meio do caminho, a escolha dele ainda está lá quando voltar.
 

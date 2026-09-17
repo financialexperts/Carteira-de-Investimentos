@@ -3,7 +3,6 @@
 
   var Classes = global.AssetClasses;
   var Format = global.Format;
-  var MAX = Classes.maxPerCategory;
 
   var ICON_X = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
 
@@ -63,8 +62,6 @@
 
   function addRow(key, item, focus) {
     var wrap = rowsEl(key);
-    if (wrap.children.length >= MAX) return;
-
     var row = document.createElement("div");
     row.className = "allocrow";
     row.innerHTML =
@@ -159,18 +156,11 @@
   /* ============ totais na tela ============ */
   function syncCategory(key) {
     var el = catEl(key);
-    var count = rowsEl(key).children.length;
     var soma = categorySum(key);
 
     el.querySelector('[data-pct="' + key + '"]').textContent =
       pctText(percentOf(soma, carteira())) + "%";
     el.querySelector('[data-money="' + key + '"]').textContent = "R$ " + money(soma);
-
-    var add = el.querySelector("[data-add]");
-    add.disabled = count >= MAX;
-    add.textContent = count >= MAX
-      ? "Limite de " + MAX + " investimentos nesta categoria"
-      : "Adicionar investimento";
 
     syncTotal();
   }
@@ -285,7 +275,7 @@
       if (!items.length) {
         addRow(cat.key, null, false);
       } else {
-        items.slice(0, MAX).forEach(function (item) { addRow(cat.key, item, false); });
+        items.forEach(function (item) { addRow(cat.key, item, false); });
       }
     });
     syncAllCategories();

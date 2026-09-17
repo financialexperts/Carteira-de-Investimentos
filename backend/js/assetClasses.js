@@ -8,8 +8,6 @@
   //
   // A ordem daqui é a ordem na tela e no gráfico da carteira, e cada posição
   // tem uma cor fixa no styles.css — mexer na ordem troca as cores.
-  var MAX_PER_CATEGORY = 5;
-
   var GROUPS = [
     {
       key: "rf",
@@ -48,7 +46,6 @@
   global.AssetClasses = {
     groups: GROUPS,
     list: LIST,
-    byKey: byKey,
-    maxPerCategory: MAX_PER_CATEGORY
+    byKey: byKey
   };
 })(window);
