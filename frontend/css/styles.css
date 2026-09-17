@@ -1,0 +1,476 @@
+/* ---------- Design tokens ---------- */
+:root{
+  --bg:#E9E9EE;
+  --bg-grid:rgba(39,34,89,.05);
+  --surface:#FFFFFF;
+  --surface-2:#F9F8FA;
+  --ink:#272259;
+  --ink-soft:#57537E;
+  --muted:#827F9F;
+  --line:#DCDCE4;
+  --line-strong:#BEBDCD;
+  --accent:#2FE39A;
+  --accent-hover:#28C183;
+  --accent-ink:#21867A;
+  --accent-soft:#DFF7EC;
+  --accent-contrast:#151238;
+  --warm:#D97B2B;
+  --warm-soft:#F7E3CE;
+  --danger:#B3322A;
+  --focus:#21867A;
+  --radius:14px;
+  --shadow-sm:0 1px 2px rgba(39,34,89,.06);
+  --shadow:0 1px 2px rgba(39,34,89,.05), 0 14px 32px -20px rgba(39,34,89,.45);
+  --ff-display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
+  --ff-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ff-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --icon-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3 8.5l3.2 3.2L13 4.5'/%3E%3C/svg%3E");
+  --icon-warning:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M8 1.6 15 14H1L8 1.6z'/%3E%3Cpath stroke='%23000' stroke-width='1.6' stroke-linecap='round' d='M8 6.4v3.4'/%3E%3Ccircle cx='8' cy='12.1' r='.9' fill='%23000'/%3E%3C/svg%3E");
+}
+[data-theme="dark"]{
+  --bg:#0F0C29;
+  --bg-grid:rgba(60,239,162,.05);
+  --surface:#1D1A43;
+  --surface-2:#171435;
+  --ink:#EDEDF7;
+  --ink-soft:#C7C5E0;
+  --muted:#9E9CB4;
+  --line:#2A2860;
+  --line-strong:#3B3878;
+  --accent:#3CEFA2;
+  --accent-hover:#33CB8A;
+  --accent-ink:#5FF5B7;
+  --accent-soft:#162E3B;
+  --accent-contrast:#0B0920;
+  --warm:#E39B57;
+  --warm-soft:#33251A;
+  --danger:#F08379;
+  --focus:#3CEFA2;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 16px 34px -22px rgba(0,0,0,.9);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--ff-body);
+  color:var(--ink);
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--bg-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bg-grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  line-height:1.5;
+  font-size:16px;
+  min-height:100vh;
+}
+h1,h2,h3{font-family:var(--ff-display);font-weight:700;letter-spacing:-.02em;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+input{font:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---------- Liquid glass ---------- */
+.glass{
+  position:relative;
+  isolation:isolate;
+  background:color-mix(in srgb,var(--surface) 62%,transparent);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s,box-shadow .25s,color .2s;
+}
+.glass::before,.glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.glass::before{
+  background:linear-gradient(165deg,rgba(255,255,255,.55),rgba(255,255,255,0) 45%);
+  opacity:.5;
+  mix-blend-mode:overlay;
+}
+[data-theme="dark"] .glass::before{opacity:.16}
+.glass::after{
+  background:radial-gradient(160px 160px at var(--gx,50%) var(--gy,40%),color-mix(in srgb,var(--accent) 65%,white),transparent 70%);
+  opacity:0;
+  transition:opacity .35s;
+}
+.glass:hover::after{opacity:.28}
+.glass:hover{box-shadow:var(--shadow)}
+.glass:active{transform:scale(.97)}
+
+/* ---------- Topbar ---------- */
+.topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
+[data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
+.topbar__in{display:flex;align-items:center;gap:14px;min-height:60px}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0;text-decoration:none;border-radius:8px;transition:opacity .15s}
+.brand:hover{opacity:.8}
+.brand__logo{height:26px;width:auto;flex:none;display:block}
+[data-theme="light"] .brand__logo--dark{display:none}
+[data-theme="dark"] .brand__logo--light{display:none}
+.brand__sep{width:1px;height:22px;background:var(--line-strong);flex:none}
+.brand__name{font-family:var(--ff-display);font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
+.iconbtn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm)}
+.iconbtn:hover{border-color:var(--line-strong)}
+.iconbtn svg{position:absolute;top:50%;left:50%;width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+[data-theme="dark"] .icon-moon{opacity:0;transform:translate(-50%,-50%) rotate(-100deg) scale(.4)}
+[data-theme="light"] .icon-sun{opacity:0;transform:translate(-50%,-50%) rotate(100deg) scale(.4)}
+
+.userbox{display:flex;align-items:center;gap:10px;margin-right:2px}
+.userbox__email{font-size:13px;color:var(--ink-soft);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- Loading / setup ---------- */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:120px 0;color:var(--muted);font-size:14px}
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent-ink);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.setup-card{max-width:560px;margin:60px auto;padding:24px}
+.setup-card code{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:var(--ff-mono);font-size:.92em}
+
+/* ---------- Panels ---------- */
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.panel:not([hidden]){animation:panelIn .45s cubic-bezier(.16,1,.3,1)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card__head{padding:20px 22px 0}
+.card__kicker{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.card__title{font-size:19px;margin-top:6px}
+.card__sub{margin-top:6px;font-size:13.5px;color:var(--muted)}
+.card__body{padding:20px 22px 22px}
+
+/* ---------- Form ---------- */
+.field+.field{margin-top:18px}
+.field label{display:block;font-weight:500;font-size:14.5px;margin-bottom:2px}
+.field .hint{display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);background:var(--surface-2);border-radius:11px;padding:0 12px;transition:border-color .15s,box-shadow .15s}
+.input:focus-within{border-color:var(--focus);box-shadow:0 0 0 3px var(--accent-soft)}
+.input.is-error{border-color:var(--danger)}
+.input__affix{font-family:var(--ff-mono);font-size:13px;color:var(--muted);flex:none}
+.input input{flex:1;min-width:0;border:0;background:transparent;padding:13px 0;font-family:var(--ff-mono);font-size:16px;font-weight:500;color:var(--ink)}
+.input input[type="email"],.input input[type="password"],.input input[type="text"]{font-family:var(--ff-body);font-weight:400;font-size:16px}
+.input input:focus{outline:none}
+.input input::placeholder{color:var(--muted);opacity:.6}
+/* remove o destaque azul/amarelo que o navegador aplica em campos preenchidos automaticamente (login salvo) */
+.input input:-webkit-autofill,
+.input input:-webkit-autofill:hover,
+.input input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--ink);
+  caret-color:var(--ink);
+  -webkit-box-shadow:0 0 0 1000px var(--surface-2) inset;
+  box-shadow:0 0 0 1000px var(--surface-2) inset;
+  transition:background-color 9999s ease-in-out 0s;
+}
+.error{display:none;align-items:center;gap:6px;color:var(--danger);font-size:12.5px;margin-top:8px}
+.error.is-on{display:flex}
+.error::before{content:"";flex:none;width:12px;height:12px;background-color:currentColor;-webkit-mask:var(--icon-warning) center/contain no-repeat;mask:var(--icon-warning) center/contain no-repeat}
+.ok{display:none;align-items:center;gap:6px;color:var(--accent-ink);font-size:12.5px;margin-top:8px;line-height:1.5}
+.ok.is-on{display:flex}
+.ok::before{content:"";flex:none;width:12px;height:12px;background-color:currentColor;-webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{font-family:var(--ff-mono);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;color:var(--ink-soft)}
+.chip:hover{border-color:var(--accent-ink);color:var(--accent-ink)}
+.actions{display:flex;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.actions--1{border-top:0;padding-top:4px;margin-top:20px}
+.btn{flex:1;border-radius:11px;padding:12px 14px;font-weight:600;font-size:14.5px;cursor:pointer;border:1px solid var(--line-strong)}
+.btn--sm{flex:none;padding:8px 12px;font-size:13px;border-radius:9px}
+.btn--primary{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
+.btn--primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn--primary:disabled{opacity:.6;cursor:default}
+.btn--ghost:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.btn--danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn--danger:hover{background:color-mix(in srgb,var(--danger) 85%,black);border-color:color-mix(in srgb,var(--danger) 85%,black)}
+.linklike{display:block;margin:14px auto 0;background:none;border:0;padding:2px;color:var(--accent-ink);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- Tabs ---------- */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:26px 0 22px;border-top:1px solid var(--line);padding-top:22px}
+.tabs--2{grid-template-columns:repeat(2,1fr)}
+.tab{text-align:left;border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;cursor:pointer;box-shadow:var(--shadow-sm)}
+.tab:hover{border-color:var(--line-strong)}
+.tab__n{font-family:var(--ff-mono);font-size:11px;color:var(--muted);display:block;margin-bottom:3px}
+.tab__t{font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;display:block;line-height:1.25}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);transform:translateY(-1px)}
+.tab[aria-selected="true"] .tab__n{color:color-mix(in srgb,var(--accent-contrast) 68%,transparent)}
+
+/* ---------- Auth ---------- */
+.auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:40px;align-items:center;padding:36px 0 60px;min-height:calc(100vh - 200px)}
+.auth__intro h1{font-size:clamp(28px,4.4vw,42px);line-height:1.08;max-width:14ch}
+.auth__intro p{margin-top:16px;max-width:44ch;color:var(--ink-soft);font-size:15.5px}
+.auth__card{padding-bottom:6px}
+.auth__card .tabs{margin:0;border-top:0;padding-top:18px;padding-left:18px;padding-right:18px}
+
+/* ---------- Onboarding ---------- */
+.hero{padding:40px 0 6px}
+.hero h1{font-size:clamp(26px,4.6vw,38px);line-height:1.1}
+.hero p{margin-top:12px;max-width:56ch;color:var(--ink-soft);font-size:15px}
+.hero--onboarding{padding-top:32px}
+.tabs--steps{margin-top:26px}
+/* as abas das etapas são botões: clicar numa delas navega entre as etapas */
+.tab--step{display:flex;flex-direction:column;gap:3px;opacity:.5;background:transparent;box-shadow:none;transition:opacity .15s,border-color .15s,background .15s}
+.tab--step:not(.is-active):hover{opacity:.9;border-color:var(--line-strong);background:var(--surface-2)}
+.tab--step.is-active{opacity:1;background:var(--surface);box-shadow:var(--shadow);cursor:default}
+.tab--step.is-done{opacity:.85}
+.tab--step.is-done .tab__n::after{content:"";display:inline-block;margin-left:5px;width:10px;height:10px;vertical-align:-1px;background-color:var(--accent-ink);-webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat}
+
+/* ---------- Perfil de investidor (etapa 1) ---------- */
+/* os 3 perfis são radios de verdade (setas do teclado, leitor de tela e
+   "name" em comum de graça) — o input fica invisível e o cartão logo depois
+   dele (.profileopt__card) é quem mostra o estado marcado e o foco. */
+.profiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.profileopt{position:relative;display:flex;cursor:pointer}
+.profileopt__input{position:absolute;top:0;left:0;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+.profileopt__card{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 16px 18px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface-2);transition:border-color .15s,box-shadow .15s,background .15s}
+.profileopt:hover .profileopt__card{border-color:var(--muted)}
+.profileopt__input:focus-visible + .profileopt__card{outline:2px solid var(--focus);outline-offset:2px}
+/* depois do :hover de propósito (mesma especificidade): marcado continua
+   com a borda de destaque mesmo com o mouse em cima. */
+.profileopt__input:checked + .profileopt__card{border-color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-ink)}
+.profileopt__head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.profileopt__name{font-family:var(--ff-display);font-weight:700;font-size:22px;letter-spacing:-.01em;line-height:1.2}
+.profileopt__check{flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;transition:background .15s,border-color .15s}
+.profileopt__check::after{content:"";width:12px;height:12px;background-color:var(--accent-contrast);-webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat;opacity:0;transition:opacity .15s}
+.profileopt__input:checked + .profileopt__card .profileopt__check{background:var(--accent);border-color:var(--accent)}
+.profileopt__input:checked + .profileopt__card .profileopt__check::after{opacity:1}
+.profileopt__details{display:flex;flex-direction:column}
+/* no cartão de escolha o medidor de risco aparece maior que no da Carteira */
+.profileopt .risk{gap:10px}
+.profileopt .risk__bars{gap:4px;height:20px}
+.profileopt .risk__bar{width:7px}
+.profileopt .risk__bar:nth-child(1){height:8px}
+.profileopt .risk__bar:nth-child(2){height:14px}
+.profileopt .risk__bar:nth-child(3){height:20px}
+.profileopt .risk__label{font-size:14px;font-weight:600;color:var(--ink-soft)}
+
+/* medidor de risco: 3 barrinhas crescentes (tipo sinal de celular) —
+   verde, laranja ou vermelho conforme quantas estão acesas. */
+.risk{display:flex;align-items:center;gap:8px}
+.risk__bars{display:flex;align-items:flex-end;gap:3px;height:14px}
+.risk__bar{width:5px;border-radius:2px;background:var(--line-strong)}
+.risk__bar:nth-child(1){height:6px}
+.risk__bar:nth-child(2){height:10px}
+.risk__bar:nth-child(3){height:14px}
+.risk--1 .risk__bar:nth-child(-n+1){background:var(--accent-ink)}
+.risk--2 .risk__bar:nth-child(-n+2){background:var(--warm)}
+.risk--3 .risk__bar:nth-child(-n+3){background:var(--danger)}
+.risk__label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Cores das categorias ---------- */
+/* Uma cor fixa por categoria, usada nos dois lugares: na etapa 2 (a faixa de
+   cada categoria) e na carteira (a fatia da pizza e o ponto da legenda) — a
+   cor pertence à categoria, não ao tamanho da fatia, então a aluna reconhece
+   "Renda Fixa Pós" pela mesma cor nas duas telas. São os slots 1 a 6 da
+   paleta categórica validada do guia de visualização, com os passos próprios
+   de cada tema. */
+[data-cat="rf_pos"]{--cat:#2a78d6}
+[data-cat="rf_pre"]{--cat:#eb6834}
+[data-cat="rf_inflacao"]{--cat:#1baf7a}
+[data-cat="multimercado"]{--cat:#eda100}
+[data-cat="rv_brasil"]{--cat:#e87ba4}
+[data-cat="rv_internacional"]{--cat:#008300}
+[data-cat="rf_internacional"]{--cat:#4a3aa7}
+[data-cat="ouro"]{--cat:#e34948}
+[data-theme="dark"] [data-cat="rf_pos"]{--cat:#3987e5}
+[data-theme="dark"] [data-cat="rf_pre"]{--cat:#d95926}
+[data-theme="dark"] [data-cat="rf_inflacao"]{--cat:#199e70}
+[data-theme="dark"] [data-cat="multimercado"]{--cat:#c98500}
+[data-theme="dark"] [data-cat="rv_brasil"]{--cat:#d55181}
+[data-theme="dark"] [data-cat="rv_internacional"]{--cat:#008300}
+[data-theme="dark"] [data-cat="rf_internacional"]{--cat:#9085e9}
+[data-theme="dark"] [data-cat="ouro"]{--cat:#e66767}
+
+/* ---------- Investimentos por categoria (etapa 2) ---------- */
+/* duas tabelas (RF e RV) com as categorias fixas de backend/js/assetClasses.js.
+   As três colunas (nome, %, remover) usam o mesmo grid no cabeçalho e nas
+   linhas, então tudo fica alinhado de uma categoria pra outra. */
+.alloc{margin-bottom:14px}
+.alloc:last-child{margin-bottom:0}
+.alloc .card__title{font-size:17px}
+/* o "RF" / "RV" do cabeçalho vira uma pastilha, igual à da legenda do gráfico */
+.alloc .card__kicker{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--accent-ink);border:1px solid var(--accent-ink);border-radius:6px;padding:2px 7px}
+.alloc__cols{display:grid;grid-template-columns:minmax(0,1fr) 116px 34px;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line);font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.alloc__cols span:nth-child(2){text-align:right}
+.alloccat{padding-top:16px}
+/* a faixa de cada categoria vem tingida com a cor que ela tem no gráfico */
+.alloccat__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 13px;border-radius:10px;border-left:3px solid var(--cat);background:color-mix(in srgb,var(--cat) 11%,transparent)}
+[data-theme="dark"] .alloccat__head{background:color-mix(in srgb,var(--cat) 17%,transparent)}
+.alloccat__name{font-family:var(--ff-display);font-weight:700;font-size:16px;letter-spacing:-.01em;line-height:1.25}
+/* o que a categoria tem, nas duas leituras: a % (que é o resultado) em cima e
+   o valor em reais logo abaixo, menor */
+.alloccat__total{flex:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.25}
+.alloccat__pct{font-family:var(--ff-mono);font-size:16px;font-weight:600}
+.alloccat__money{font-family:var(--ff-mono);font-size:12px;color:var(--ink-soft)}
+.alloccat__rows{display:grid;gap:8px;margin-top:12px}
+.alloccat__rows:empty{display:none}
+.allocrow{display:grid;grid-template-columns:minmax(0,1fr) 116px 34px;gap:10px;align-items:center}
+.allocrow .input{padding:0 11px}
+.allocrow .input input{padding:9px 0;font-size:14.5px}
+/* "R$" à esquerda e o número encostado nele pela direita: a coluna toda fica
+   alinhada pela vírgula, como numa planilha */
+.allocrow__val input{text-align:right;font-family:var(--ff-mono);font-weight:500}
+.allocrow__del{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;background:transparent;cursor:pointer;color:var(--muted);transition:color .15s,border-color .15s,background .15s}
+.allocrow__del:hover{color:var(--danger);border-color:var(--danger);background:var(--surface-2)}
+.allocrow__del svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round}
+.allocadd{display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:8px 13px;border:1px dashed var(--line-strong);border-radius:10px;background:transparent;font-size:13.5px;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:color .15s,border-color .15s}
+.allocadd::before{content:"+";font-family:var(--ff-mono);font-size:16px;line-height:1;color:var(--accent-ink)}
+.allocadd:hover{border-color:var(--accent-ink);color:var(--accent-ink)}
+.allocadd:disabled{border-style:solid;color:var(--muted);cursor:default;opacity:.75}
+.allocadd:disabled::before{content:"";display:none}
+
+/* O total investido: o único campo desta etapa que não é de um investimento,
+   e por isso fica sozinho, antes de tudo. */
+.allocsetup{padding:16px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface-2)}
+.allocsetup .input{background:var(--surface)}
+.allocsetup__input{max-width:300px}
+
+/* Já distribuído: é o retorno do sistema, não um campo — por isso num quadro
+   separado. Laranja enquanto falta, verde quando fecha e vermelho quando
+   passa — a barra repete isso sem depender da cor. */
+.alloctotal{margin:12px 0 20px;padding:14px 16px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface-2);transition:border-color .2s,background .2s}
+.alloctotal__top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.alloctotal__label{font-weight:600;font-size:14.5px}
+.alloctotal__hint{margin-top:2px;font-size:12.5px;color:var(--ink-soft)}
+.alloctotal__value{font-family:var(--ff-mono);font-size:22px;font-weight:600}
+.alloctotal__meter{display:block;height:7px;margin-top:12px;border-radius:999px;background:color-mix(in srgb,var(--line-strong) 55%,transparent);overflow:hidden}
+.alloctotal__fill{display:block;height:100%;width:0;border-radius:999px;background:var(--line-strong);transition:width .25s,background .2s}
+/* aviso de quando o valor digitado foi cortado pra não passar de 100% */
+.alloctotal__cap{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;font-weight:500;color:var(--warm)}
+.alloctotal__cap::before{content:"";flex:none;width:12px;height:12px;background-color:currentColor;-webkit-mask:var(--icon-warning) center/contain no-repeat;mask:var(--icon-warning) center/contain no-repeat}
+
+.alloctotal.is-partial{border-color:var(--warm);background:var(--warm-soft)}
+.alloctotal.is-partial .alloctotal__value{color:var(--warm)}
+.alloctotal.is-partial .alloctotal__fill{background:var(--warm)}
+
+.alloctotal.is-ok{border-color:var(--accent-ink);background:var(--accent-soft)}
+.alloctotal.is-ok .alloctotal__value{color:var(--accent-ink)}
+.alloctotal.is-ok .alloctotal__fill{background:var(--accent-ink)}
+
+.alloctotal.is-over{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.alloctotal.is-over .alloctotal__value{color:var(--danger)}
+.alloctotal.is-over .alloctotal__fill{background:var(--danger)}
+
+/* ---------- Carteira: o cartão do perfil ---------- */
+/* título à esquerda, botão pequeno à direita, quebrando linha sozinho quando
+   não cabe. Os cartões dos gráficos usam esse mesmo cabeçalho. */
+.profilecard{margin-top:26px;padding:20px 22px 22px}
+.profilecard__head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.profilecard__name{font-size:clamp(26px,4vw,34px);line-height:1.1;margin-top:6px}
+.profilecard__tagline{margin-top:6px;font-weight:600;font-size:15px;color:var(--ink-soft)}
+.profilecard__risk{margin-top:14px}
+.profilecard__desc{margin-top:14px;max-width:62ch;font-size:15px;color:var(--ink-soft);line-height:1.55}
+.profilecard__examples{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.profilecard__label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.profilecard__exvalue{margin-top:4px;font-size:15px}
+
+/* ---------- Carteira: os dois gráficos de pizza ---------- */
+/* dois cartões iguais, um embaixo do outro: o que a aluna montou e o sugerido
+   pro perfil dela. O título é grande porque é ele que diz de qual dos dois se
+   está falando. */
+.invcard{margin-top:16px;padding:20px 22px 22px}
+.invcard__title{font-size:clamp(21px,2.6vw,26px);line-height:1.15}
+.invcard__sub{margin-top:5px;font-size:14.5px;color:var(--ink-soft)}
+/* o de baixo é a referência, não a carteira dela: fundo levemente recuado.
+   Aí o realce da legenda inverte, senão sumiria contra o próprio fundo. */
+.invcard--sug{background:var(--surface-2)}
+.invcard--sug .invlegend__row:hover,
+.invcard--sug .invchart.is-hover .invlegend__row.is-on{background:var(--surface)}
+/* o anel ocupa metade do cartão e a legenda a outra metade */
+.invchart{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center;margin-top:22px}
+
+/* o anel e o visor no meio dele ocupam o mesmo quadrado */
+.invchart__pie{position:relative;margin:0;width:100%;max-width:480px;justify-self:center}
+.pie{display:block;width:100%;height:auto}
+/* a espessura da rosca é o stroke-width, e os 34px também servem de alvo de
+   toque: no celular a fatia é clicada, não só apontada */
+.pieseg{fill:none;stroke:var(--cat);stroke-width:34;cursor:pointer;touch-action:manipulation;transition:opacity .18s,stroke-width .18s}
+.pieseg--empty{cursor:default}
+/* A caixa de uma fatia é o círculo inteiro, então o anel de foco do navegador
+   sairia como um retângulo em volta do gráfico todo. Quem chega de teclado vê
+   a própria fatia acender (portfolio.js), que diz muito mais onde ela está. */
+.pieseg:focus,.pieseg:focus-visible{outline:none}
+.pieseg--empty{stroke:var(--line);stroke-width:34}
+.invchart.is-hover .pieseg:not(.is-on){opacity:.28}
+.invchart.is-hover .pieseg.is-on{stroke-width:40}
+
+/* visor no meio do anel: o total em repouso, a categoria com o mouse em cima */
+.pie__center{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:2px;text-align:center;padding:0 24%;pointer-events:none}
+.pie__value{font-family:var(--ff-display);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1;letter-spacing:-.02em}
+.pie__label{font-size:14px;line-height:1.3;color:var(--muted)}
+
+/* legenda: as categorias agrupadas dentro de RF e RV */
+.invlegend{display:grid;gap:20px;min-width:0}
+.invlegend__title{display:flex;align-items:center;gap:9px;padding-bottom:10px;border-bottom:1px solid var(--line-strong);font-family:var(--ff-display);font-weight:700;font-size:15.5px;letter-spacing:-.01em}
+.invlegend__abbr{font-family:var(--ff-mono);font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--accent-ink);border:1px solid var(--accent-ink);border-radius:6px;padding:2px 7px}
+.invlegend__grouppct{margin-left:auto;font-family:var(--ff-mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.invlegend__rows{list-style:none;margin:6px 0 0;padding:0;display:grid}
+/* botão, não texto: é o alvo de toque da categoria no celular */
+.invlegend__row{width:100%;display:flex;align-items:center;gap:10px;padding:9px;border:0;background:transparent;border-radius:9px;font:inherit;font-size:15px;text-align:left;cursor:pointer;touch-action:manipulation;transition:opacity .18s,background .18s}
+.invlegend__row:hover{background:var(--surface-2)}
+.invchart.is-hover .invlegend__row:not(.is-on){opacity:.45}
+.invchart.is-hover .invlegend__row.is-on{background:var(--surface-2)}
+.invlegend__dot{flex:none;width:12px;height:12px;border-radius:4px;background:var(--cat)}
+.invlegend__name{min-width:0;color:var(--ink-soft);overflow-wrap:anywhere}
+.invlegend__pct{margin-left:auto;flex:none;font-family:var(--ff-mono);font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---------- Footer ---------- */
+footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font-size:13px;color:var(--muted);text-align:center}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .auth{grid-template-columns:1fr;gap:26px;padding-top:20px;min-height:0}
+  .auth__intro{text-align:center}
+  .auth__intro p{margin-left:auto;margin-right:auto}
+  .profiles{grid-template-columns:1fr}
+  /* numa coluna só o anel não precisa da largura toda: fica centralizado e a
+     legenda vem logo abaixo */
+  .invchart{grid-template-columns:1fr;gap:24px}
+  .invchart__pie{max-width:360px}
+}
+@media (max-width:720px){
+  .wrap{padding:0 16px}
+  .topbar__in{min-height:56px;gap:8px}
+  .brand__name,.brand__sep{display:none}
+  .userbox__email{display:none}
+  .auth{padding:32px 0 32px}
+  .auth__intro h1{max-width:none}
+  .card__head{padding:18px 18px 0}
+  .card__body{padding:18px 18px 20px}
+  .auth__card .tabs{padding-left:18px;padding-right:18px}
+  .tabs{grid-template-columns:1fr;gap:7px}
+  .tabs--2{grid-template-columns:repeat(2,1fr)}
+  .actions{flex-direction:column-reverse}
+  .profilecard{padding:16px 16px 18px}
+  .profilecard__head{flex-direction:column}
+  .invcard{padding:16px 16px 18px}
+  /* as tabelas são cartões dentro do cartão da etapa: aqui elas encostam mais
+     nas bordas, senão sobra pouca largura pro nome do investimento */
+  .alloc .card__head{padding:16px 13px 0}
+  .alloc .card__body{padding:14px 13px 16px}
+  /* sem o cabeçalho das colunas: "% da carteira" não cabe numa linha aqui, e
+     o campo já se explica pelo texto de exemplo e pelo "%" ao lado */
+  .alloc__cols{display:none}
+  /* a coluna da % encolhe antes do nome do investimento */
+  .allocrow{grid-template-columns:minmax(0,1fr) 84px 34px;gap:8px}
+  .alloctotal__value{font-size:20px}
+}
+
+/* Abaixo disso o nome e a porcentagem não cabem lado a lado: o nome passa a
+   ocupar a linha inteira, e embaixo dele ficam a % à esquerda e o botão de
+   remover na direita, alinhado com a ponta do campo de nome. */
+@media (max-width:560px){
+  .allocrow{grid-template-columns:118px minmax(0,1fr) 34px;gap:8px}
+  .allocrow__name{grid-column:1 / -1}
+  .allocrow__val{grid-column:1}
+  .allocrow__del{grid-column:3}
+  .alloccat__rows{gap:16px}
+  .invlegend__row{padding:7px 4px}
+}
+@media (max-width:380px){
+  .card__body{padding:16px}
+  .alloc .card__head{padding:14px 11px 0}
+  .alloc .card__body{padding:12px 11px 14px}
+  .alloccat__head{padding:9px 10px}
+  .alloccat__name{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+@media print{
+  .topbar,.actions,.chips,footer,.tabs,#pf-change,#pf-edit-inv{display:none}
+  body{background:#fff}
+  .card{box-shadow:none}
+}
