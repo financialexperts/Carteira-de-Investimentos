@@ -494,13 +494,29 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .allocrow__del{grid-column:3}
   .alloccat__rows{gap:16px}
   .invlegend__row{padding:7px 4px}
-  /* a tabela da diferença aperta as colunas de número em vez de rolar de lado */
+  /* a tabela da diferença aperta em vez de rolar de lado: as colunas soltam a
+     largura fixa e "aumentar 17,5%" quebra em duas linhas */
+  .difftable td,.difftable td:last-child{width:auto}
   .difftable td,.difftable tbody th{padding:9px 5px;font-size:13.5px}
-  .difftable thead th{padding:0 5px 9px;font-size:9.5px;letter-spacing:.04em}
-  .difftable__cat{gap:7px;font-size:13.5px}
+  /* sem o nowrap: era o cabeçalho, não os números, que segurava a coluna larga */
+  .difftable thead th{padding:0 5px 9px;font-size:9.5px;letter-spacing:.04em;white-space:normal}
+  .difftable__cat{font-size:13.5px}
+  .difftable__dot{margin-right:7px}
+  .difftable__falta{white-space:normal}
+  .difftable__verbo{display:block;font-size:12px}
+  .difftable__quanto{margin-left:0}
 }
 @media (max-width:380px){
   .card__body{padding:16px}
+  /* a tabela da diferença é o conteúdo mais largo do app: aqui ela ganha as
+     bordas do cartão de volta e aperta o resto, pra caber sem rolagem lateral */
+  .invcard{padding:14px 12px 16px}
+  .difftable td,.difftable tbody th{padding:8px 3px;font-size:13px}
+  .difftable thead th{padding:0 3px 8px}
+  .difftable__cat{font-size:13px}
+  .difftable__dot{width:9px;height:9px;margin-right:5px}
+  .difftable__verbo{font-size:11px}
+  .difftable__quanto{font-size:13px}
   .alloc .card__head{padding:14px 11px 0}
   .alloc .card__body{padding:12px 11px 14px}
   .alloccat__head{padding:9px 10px}
