@@ -20,11 +20,11 @@ Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css
    | --- | --- |
    | **Sua carteira** | A rosca do que ele montou na etapa 02. |
    | **Carteira sugerida para o seu perfil** | A mesma rosca, com a alocação sugerida para o perfil dele. |
-   | **Diferença entre elas** | Barras para os dois lados de um zero: à esquerda o que falta, à direita o que sobra, em pontos da carteira. |
+   | **Diferença entre elas** | Uma tabela: a % dele, a sugerida e o que fazer para chegar lá. |
 
    Os botões "Alterar perfil" e "Editar investimentos" voltam para cada etapa.
 
-A aba **Diferença** não usa rosca de propósito: a diferença tem sinal e as partes não somam 100, então o que responde a "onde eu estou fora?" é uma barra por categoria saindo de um zero no meio. No topo dela aparece um resumo: quanto da carteira precisaria mudar de categoria para chegar na sugerida.
+A aba **Diferença** é tabela, não gráfico: a diferença tem sinal e as partes não somam 100, então não existe fatia de "−30%". A última coluna é escrita como instrução — `aumentar 30%`, `diminuir 17,5%`, `no ponto` — porque a conta é **sugerida menos a dele**, e não o contrário: o número responde "o que eu faço?", não "o que aconteceu?". No topo da tabela aparece um resumo: quanto da carteira precisaria mudar de categoria para chegar na sugerida.
 
 As duas etapas só aparecem na primeira vez. Depois, o aluno cai direto na carteira.
 
