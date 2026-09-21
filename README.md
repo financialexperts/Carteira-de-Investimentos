@@ -14,17 +14,19 @@ Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css
 
 3. **Etapa 02 — Seus investimentos.** Ele informa o **total investido, em reais**, e distribui esse dinheiro entre as categorias. Cada investimento tem um nome e um valor, também em reais, e não há limite de quantos cabem por categoria. A soma precisa fechar exatamente no total informado.
 
-4. **A carteira.** Um seletor com três visões da mesma carteira:
+4. **A carteira.** Três partes, uma embaixo da outra, todas na mesma página:
 
-   | Aba | O que mostra |
+   | Parte | O que mostra |
    | --- | --- |
+   | **Diferença entre elas** | Uma tabela: a % dele, a sugerida e o que fazer para chegar lá. |
    | **Sua carteira** | A rosca do que ele montou na etapa 02. |
    | **Carteira sugerida para o seu perfil** | A mesma rosca, com a alocação sugerida para o perfil dele. |
-   | **Diferença entre elas** | Uma tabela: a % dele, a sugerida e o que fazer para chegar lá. |
+
+   Acima delas ficam três botões que são só atalhos: grudam no alto da tela, levam até a parte ao serem clicados e acendem sozinhos conforme a página rola. No celular, cada um aparece com o nome curto ("Diferença", "Sua carteira", "Sugerida"), para os três caberem numa linha.
 
    Os botões "Alterar perfil" e "Editar investimentos" voltam para cada etapa.
 
-A aba **Diferença** é tabela, não gráfico: a diferença tem sinal e as partes não somam 100, então não existe fatia de "−30%". A última coluna é escrita como instrução — `aumentar 30%`, `diminuir 17,5%`, `no ponto` — porque a conta é **sugerida menos a dele**, e não o contrário: o número responde "o que eu faço?", não "o que aconteceu?". No topo da tabela aparece um resumo: quanto da carteira precisaria mudar de categoria para chegar na sugerida.
+A parte **Diferença** é tabela, não gráfico: a diferença tem sinal e as partes não somam 100, então não existe fatia de "−30%". A última coluna é escrita como instrução — `aumentar 30%`, `diminuir 17,5%`, `no ponto` — porque a conta é **sugerida menos a dele**, e não o contrário: o número responde "o que eu faço?", não "o que aconteceu?". No topo da tabela aparece um resumo: quanto da carteira precisaria mudar de categoria para chegar na sugerida.
 
 As duas etapas só aparecem na primeira vez. Depois, o aluno cai direto na carteira.
 
@@ -156,7 +158,9 @@ Sem esse SQL o aluno consegue entrar, mas ao concluir uma etapa aparece "Não de
 
 **O limitador do total.** A soma dos investimentos nunca passa do total da carteira: o que o aluno digita a mais é cortado no que ainda cabe, com um aviso dizendo quanto era. Se ele **baixar o total** depois de distribuir tudo, aí sim a soma fica maior — nesse caso o sistema não mexe no que ele digitou, mostra em vermelho quanto passou e não deixa concluir. Diminuir o número de alguém é escolha dele, não do sistema.
 
-**Tocar, não só apontar.** Cada fatia e cada linha da legenda são alvos de clique, toque e teclado. No celular não existe "passar o mouse em cima", então o destaque fica aceso até o aluno desmarcar. As duas roscas guardam o próprio destaque, sem uma mexer na outra. No seletor de abas, as setas do teclado andam entre as visões.
+**Tocar, não só apontar.** Cada fatia e cada linha da legenda são alvos de clique, toque e teclado. No celular não existe "passar o mouse em cima", então o destaque fica aceso até o aluno desmarcar. As duas roscas guardam o próprio destaque, sem uma mexer na outra.
+
+**Atalhos da carteira.** O botão aceso é o da última parte cujo começo já passou de uma linha a 30% da tela, logo abaixo dos botões — e, no fim da página, o da última parte, que às vezes não tem página embaixo para subir até lá. Depois de um clique, o botão clicado fica aceso até o aluno rolar por conta própria: assim ele não pisca nas partes do caminho, nem troca sozinho numa tela alta em que a parte clicada não consegue chegar ao topo. O clique não mexe no `#` do endereço, porque é por ele que chega o link de recuperação de senha.
 
 **O que é salvo e quando.** O perfil é salvo ao sair da etapa 01, antes da etapa 02 — assim, se o aluno fechar a página no meio do caminho, a escolha dele ainda está lá quando voltar.
 

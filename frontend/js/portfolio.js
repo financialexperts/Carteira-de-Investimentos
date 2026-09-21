@@ -21,47 +21,102 @@
   var grafAluno = null;
   var grafSugerido = null;
 
-  // as três abas. "sub" é a linha de explicação, e a da sugerida depende do
-  // perfil, então é montada na hora (por isso função em vez de texto fixo).
-  var VIEWS = [
-    {
-      key: "minha",
-      title: "Seus investimentos",
-      sub: function () { return "O que você escolheu para cada categoria."; }
-    },
-    {
-      key: "sugerida",
-      title: "Carteira sugerida",
-      sub: function (p) {
-        return "Como a carteira de um perfil " + p.name.toLowerCase() + " costuma ficar.";
-      }
-    },
-    {
-      key: "diferenca",
-      title: "Diferença entre elas",
-      sub: function () {
-        return "O que mudar em cada categoria para chegar na carteira sugerida.";
-      }
-    }
-  ];
+  /* ============ atalhos: as três partes da carteira ============ */
+  // Na ordem em que aparecem na página. Está tudo na tela ao mesmo tempo: o
+  // botão só leva até a parte, e quem decide qual botão fica aceso é a
+  // rolagem — descendo, o próximo acende sozinho.
+  var SECOES = ["diferenca", "minha", "sugerida"];
+  var secaoAtual = null;
 
-  var perfilAtual = null;
+  // Enquanto a página rola sozinha por causa de um clique, a leitura da
+  // rolagem fica parada: senão, indo da 1ª pra 3ª, a 2ª acenderia no caminho.
+  // E o botão clicado segue aceso até a própria pessoa rolar — numa tela alta
+  // a parte do meio pode nem conseguir subir até o topo, e aí a conta de "qual
+  // está na tela" diria a última.
+  var rolandoPorClique = false;
+  var fimDoClique = null;
+  var quadroPedido = false;
 
-  function mostrarView(key) {
-    VIEWS.forEach(function (v) {
-      var aba = document.getElementById("pf-tab-" + v.key);
-      var painel = document.getElementById("pf-pane-" + v.key);
-      var ativa = v.key === key;
+  var semAnimacao = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      painel.hidden = !ativa;
-      aba.setAttribute("aria-selected", String(ativa));
-      aba.tabIndex = ativa ? 0 : -1;   // Tab entra no seletor, setas andam nele
-
-      if (ativa) {
-        document.getElementById("pf-view-title").textContent = v.title;
-        document.getElementById("pf-view-sub").textContent = v.sub(perfilAtual);
-      }
+  function marcarSecao(key) {
+    if (key === secaoAtual) return;
+    secaoAtual = key;
+    SECOES.forEach(function (k) {
+      var link = document.getElementById("pf-nav-" + k);
+      if (k === key) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     });
+  }
+
+  // onde os botões terminam quando estão grudados no alto: é dali pra baixo
+  // que o conteúdo aparece de verdade (vale mesmo antes de grudar)
+  function fimDosAtalhos() {
+    var nav = document.getElementById("pf-nav");
+    return parseFloat(getComputedStyle(nav).top) + nav.offsetHeight;
+  }
+
+  function secaoNaTela() {
+    var doc = document.documentElement;
+    // a última parte pode não ter página embaixo o bastante pra subir até a
+    // linha; se a rolagem chegou no fim, é ela que está sendo lida
+    if (window.scrollY > 0 && window.innerHeight + window.scrollY >= doc.scrollHeight - 4) {
+      return SECOES[SECOES.length - 1];
+    }
+    // a da vez é a última cujo começo já passou de uma linha a 30% da área
+    // visível, logo abaixo dos botões
+    var topo = fimDosAtalhos();
+    var linha = topo + (window.innerHeight - topo) * 0.3;
+    var atual = SECOES[0];
+    SECOES.forEach(function (k) {
+      if (document.getElementById("pf-sec-" + k).getBoundingClientRect().top <= linha) atual = k;
+    });
+    return atual;
+  }
+
+  function atualizarAtalhos() {
+    if (document.getElementById("view-portfolio").hidden) return;
+    var nav = document.getElementById("pf-nav");
+    // grudados, os botões ganham um fundo de vidro pra o conteúdo passar por
+    // baixo sem embaralhar com eles
+    nav.classList.toggle("is-stuck",
+      nav.getBoundingClientRect().top <= parseFloat(getComputedStyle(nav).top) + 0.5);
+    if (!rolandoPorClique) marcarSecao(secaoNaTela());
+  }
+
+  function soltarClique() {
+    rolandoPorClique = false;
+    clearTimeout(fimDoClique);
+  }
+
+  function aoRolar() {
+    // a rolagem do clique acabou quando ela para de mandar eventos
+    if (rolandoPorClique) {
+      clearTimeout(fimDoClique);
+      fimDoClique = setTimeout(soltarClique, 150);
+    }
+    if (quadroPedido) return;
+    quadroPedido = true;
+    requestAnimationFrame(function () {
+      quadroPedido = false;
+      atualizarAtalhos();
+    });
+  }
+
+  function irPara(key) {
+    var secao = document.getElementById("pf-sec-" + key);
+    // 16px de respiro entre os botões e o cartão, o mesmo de quando a página
+    // está parada lá em cima
+    var alvo = secao.getBoundingClientRect().top + window.scrollY - fimDosAtalhos() - 16;
+
+    marcarSecao(key);
+    rolandoPorClique = true;
+    clearTimeout(fimDoClique);
+    fimDoClique = setTimeout(soltarClique, 150);
+    window.scrollTo({ top: Math.max(alvo, 0), behavior: semAnimacao ? "auto" : "smooth" });
+    // o foco vai junto, como num link de âncora: leitor de tela anuncia a
+    // parte e o próximo Tab já continua dentro dela
+    secao.focus({ preventScroll: true });
   }
 
   function mount() {
@@ -73,19 +128,23 @@
       if (onEdit) onEdit(2);
     });
 
-    VIEWS.forEach(function (v, i) {
-      var aba = document.getElementById("pf-tab-" + v.key);
-      aba.addEventListener("click", function () { mostrarView(v.key); });
-      // setas esquerda/direita andam entre as abas, como se espera de um
-      // seletor de verdade
-      aba.addEventListener("keydown", function (e) {
-        var passo = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-        if (!passo) return;
+    // o href="#..." é só pra funcionar sem JS: com ele, a rolagem é feita
+    // aqui, descontando os botões grudados e sem mexer no # do endereço (é
+    // por ele que chega o link de recuperação de senha)
+    SECOES.forEach(function (k) {
+      document.getElementById("pf-nav-" + k).addEventListener("click", function (e) {
         e.preventDefault();
-        var alvo = VIEWS[(i + passo + VIEWS.length) % VIEWS.length];
-        mostrarView(alvo.key);
-        document.getElementById("pf-tab-" + alvo.key).focus();
+        irPara(k);
       });
+    });
+
+    window.addEventListener("scroll", aoRolar, { passive: true });
+    window.addEventListener("resize", aoRolar);
+    // qualquer rolagem da própria pessoa devolve os botões pra rolagem
+    ["wheel", "touchstart", "keydown"].forEach(function (tipo) {
+      window.addEventListener(tipo, function () {
+        if (rolandoPorClique) soltarClique();
+      }, { passive: true });
     });
 
     grafAluno = criarGrafico(document.getElementById("pf-investments"), "da carteira");
@@ -376,12 +435,12 @@
       "</table>";
   }
 
-  // a carteira mostra o perfil escolhido na etapa 01, o gráfico do que a aluna
-  // montou na etapa 02 e, embaixo, o gráfico sugerido pro perfil dela.
+  // a carteira mostra o perfil escolhido na etapa 01 e, embaixo, as três
+  // partes: a diferença, o gráfico do que a aluna montou na etapa 02 e o
+  // gráfico sugerido pro perfil dela.
   function show(user, profile, editCallback) {
     onEdit = editCallback;
     var p = Profiles.byKey(profile.investor_profile);
-    perfilAtual = p;
 
     document.getElementById("pf-name").textContent = p.name;
     document.getElementById("pf-tagline").textContent = p.tagline;
@@ -393,11 +452,15 @@
     var doAluno = pctDoAluno(profile);
     var sugerido = pctSugerido(p);
 
+    document.getElementById("pf-sub-sugerida").textContent =
+      "Como a carteira de um perfil " + p.name.toLowerCase() + " costuma ficar.";
+
     grafAluno.render(doAluno, "Sua carteira");
     grafSugerido.render(sugerido, "Sugestão para o perfil " + p.name);
     document.getElementById("pf-diff").innerHTML = diffHTML(doAluno, sugerido);
 
-    mostrarView("minha");
+    soltarClique();
+    atualizarAtalhos();
   }
 
   global.PortfolioView = { mount: mount, show: show };

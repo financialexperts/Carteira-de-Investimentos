@@ -256,41 +256,47 @@
       </div>
     </div>
 
-    <!-- três jeitos de olhar a mesma carteira; portfolio.js troca o painel -->
-    <div class="tabs tabs--views" role="tablist" aria-label="O que mostrar da carteira">
-      <button class="tab glass" role="tab" type="button" id="pf-tab-minha"
-              aria-controls="pf-pane-minha" aria-selected="true">Sua carteira</button>
-      <button class="tab glass" role="tab" type="button" id="pf-tab-sugerida"
-              aria-controls="pf-pane-sugerida" aria-selected="false" tabindex="-1">Carteira sugerida para o seu perfil</button>
-      <button class="tab glass" role="tab" type="button" id="pf-tab-diferenca"
-              aria-controls="pf-pane-diferenca" aria-selected="false" tabindex="-1">Diferença entre elas</button>
-    </div>
+    <!-- as três partes da carteira ficam todas na página, uma embaixo da
+         outra. Estes botões são só atalhos: grudam no alto da tela e o
+         portfolio.js acende o da parte que está sendo lida. -->
+    <nav class="tabs tabs--views" id="pf-nav" aria-label="Partes da carteira">
+      <a class="tab glass" id="pf-nav-diferenca" href="#pf-sec-diferenca">
+        <span class="tab__full">Diferença entre elas</span><span class="tab__short">Diferença</span>
+      </a>
+      <a class="tab glass" id="pf-nav-minha" href="#pf-sec-minha">
+        <span class="tab__full">Sua carteira</span><span class="tab__short">Sua carteira</span>
+      </a>
+      <a class="tab glass" id="pf-nav-sugerida" href="#pf-sec-sugerida">
+        <span class="tab__full">Carteira sugerida para o seu perfil</span><span class="tab__short">Sugerida</span>
+      </a>
+    </nav>
 
-    <div class="card invcard">
+    <!-- tabela: a % dela, a sugerida e quanto falta ou sobra em cada categoria -->
+    <section class="card invcard" id="pf-sec-diferenca" tabindex="-1" aria-labelledby="pf-title-diferenca">
+      <h2 class="invcard__title" id="pf-title-diferenca">Diferença entre elas</h2>
+      <p class="invcard__sub">O que mudar em cada categoria para chegar na carteira sugerida.</p>
+      <div class="diffchart" id="pf-diff"></div>
+    </section>
+
+    <!-- rosca + legenda do que foi salvo na etapa 02 -->
+    <section class="card invcard" id="pf-sec-minha" tabindex="-1" aria-labelledby="pf-title-minha">
       <div class="profilecard__head">
         <div>
-          <!-- título e explicação mudam junto com a aba -->
-          <h2 class="invcard__title" id="pf-view-title">Seus investimentos</h2>
-          <p class="invcard__sub" id="pf-view-sub"></p>
+          <h2 class="invcard__title" id="pf-title-minha">Seus investimentos</h2>
+          <p class="invcard__sub">O que você escolheu para cada categoria.</p>
         </div>
         <button class="btn btn--ghost glass btn--sm" type="button" id="pf-edit-inv">Editar investimentos</button>
       </div>
+      <div class="invchart" id="pf-investments"></div>
+    </section>
 
-      <!-- rosca + legenda do que foi salvo na etapa 02 -->
-      <div id="pf-pane-minha" role="tabpanel" aria-labelledby="pf-tab-minha">
-        <div class="invchart" id="pf-investments"></div>
-      </div>
-
-      <!-- mesma rosca, com as porcentagens sugeridas de investorProfiles.js -->
-      <div id="pf-pane-sugerida" role="tabpanel" aria-labelledby="pf-tab-sugerida" hidden>
-        <div class="invchart" id="pf-suggested"></div>
-      </div>
-
-      <!-- barras pra cada lado do zero: quanto falta ou sobra em cada categoria -->
-      <div id="pf-pane-diferenca" role="tabpanel" aria-labelledby="pf-tab-diferenca" hidden>
-        <div class="diffchart" id="pf-diff"></div>
-      </div>
-    </div>
+    <!-- mesma rosca, com as porcentagens sugeridas de investorProfiles.js -->
+    <section class="card invcard" id="pf-sec-sugerida" tabindex="-1" aria-labelledby="pf-title-sugerida">
+      <h2 class="invcard__title" id="pf-title-sugerida">Carteira sugerida</h2>
+      <!-- depende do perfil: o portfolio.js preenche -->
+      <p class="invcard__sub" id="pf-sub-sugerida"></p>
+      <div class="invchart" id="pf-suggested"></div>
+    </section>
   </section>
 
 </main>
@@ -298,7 +304,7 @@
 <footer>
   <div class="wrap">
     <p>Seus dados ficam salvos com segurança na sua conta. Só você tem acesso a eles.</p>
-    <p>Copyright © 2026 Guilherme Rezende e Financial Experts.</p>
+    <p>Copyright © 2026 Financial Experts.</p>
   </div>
 </footer>
 

@@ -19,6 +19,7 @@
   --danger:#B3322A;
   --focus:#21867A;
   --radius:14px;
+  --topbar-h:60px;
   --shadow-sm:0 1px 2px rgba(39,34,89,.06);
   --shadow:0 1px 2px rgba(39,34,89,.05), 0 14px 32px -20px rgba(39,34,89,.45);
   --ff-display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
@@ -100,7 +101,7 @@ input{font:inherit}
 /* ---------- Topbar ---------- */
 .topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
 [data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-.topbar__in{display:flex;align-items:center;gap:14px;min-height:60px}
+.topbar__in{display:flex;align-items:center;gap:14px;min-height:var(--topbar-h)}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0;text-decoration:none;border-radius:8px;transition:opacity .15s}
 .brand:hover{opacity:.8}
 .brand__logo{height:26px;width:auto;flex:none;display:block}
@@ -184,7 +185,7 @@ input{font:inherit}
 .tab:hover{border-color:var(--line-strong)}
 .tab__n{font-family:var(--ff-mono);font-size:11px;color:var(--muted);display:block;margin-bottom:3px}
 .tab__t{font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;display:block;line-height:1.25}
-.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);transform:translateY(-1px)}
+.tab[aria-selected="true"],.tab[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);transform:translateY(-1px)}
 .tab[aria-selected="true"] .tab__n{color:color-mix(in srgb,var(--accent-contrast) 68%,transparent)}
 
 /* ---------- Auth ---------- */
@@ -356,16 +357,27 @@ input{font:inherit}
 .profilecard__label{font-family:var(--ff-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .profilecard__exvalue{margin-top:4px;font-size:15px}
 
-/* ---------- Carteira: os dois gráficos de pizza ---------- */
-/* dois cartões iguais, um embaixo do outro: o que a aluna montou e o sugerido
-   pro perfil dela. O título é grande porque é ele que diz de qual dos dois se
-   está falando. */
+/* ---------- Carteira: as três partes ---------- */
+/* três cartões, um embaixo do outro: a diferença, o que a aluna montou e o
+   sugerido pro perfil dela. O título é grande porque é ele que diz de qual
+   parte se está falando. */
 .invcard{margin-top:16px;padding:20px 22px 22px}
+/* o cartão recebe o foco quando o atalho leva até ele (é o que o leitor de
+   tela anuncia); quem vê já tem a rolagem e o botão aceso dizendo onde está */
+.invcard:focus,.invcard:focus-visible{outline:none}
 .invcard__title{font-size:clamp(21px,2.6vw,26px);line-height:1.15}
 .invcard__sub{margin-top:5px;font-size:14.5px;color:var(--ink-soft)}
-/* o seletor das três visões, logo acima do cartão */
-.tabs--views{margin:24px 0 14px;border-top:0;padding-top:0}
-.tabs--views .tab{display:flex;align-items:center;min-height:52px;font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;line-height:1.25}
+/* Os atalhos das três partes. Grudam logo abaixo da barra do topo e, grudados,
+   viram uma cápsula de vidro por onde o conteúdo passa por baixo. O padding e
+   a borda existem desde o começo (transparentes) pra nada pular de lugar na
+   hora de grudar; a margem negativa compensa o padding e mantém os botões
+   alinhados com os cartões. */
+.tabs--views{position:sticky;top:calc(var(--topbar-h) + 8px);z-index:10;margin:24px -6px 16px;padding:6px;gap:6px;border:1px solid transparent;border-radius:calc(var(--radius) + 6px);transition:background .2s,border-color .2s,box-shadow .2s}
+.tabs--views.is-stuck{background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border-color:var(--line);box-shadow:var(--shadow)}
+.tabs--views .tab{display:flex;align-items:center;min-height:52px;color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent;font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;line-height:1.25}
+.tabs--views .tab[aria-current="true"]{color:var(--accent-contrast)}
+/* o nome curto só aparece no celular, onde os três cabem numa linha só */
+.tab__short{display:none}
 /* o anel ocupa metade do cartão e a legenda a outra metade */
 .invchart{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center;margin-top:22px}
 
@@ -457,8 +469,9 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .invchart__pie{max-width:360px}
 }
 @media (max-width:720px){
+  :root{--topbar-h:56px}
   .wrap{padding:0 16px}
-  .topbar__in{min-height:56px;gap:8px}
+  .topbar__in{gap:8px}
   .brand__name,.brand__sep{display:none}
   .userbox__email{display:none}
   .auth{padding:32px 0 32px}
@@ -468,6 +481,10 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .auth__card .tabs{padding-left:18px;padding-right:18px}
   .tabs{grid-template-columns:1fr;gap:7px}
   .tabs--2{grid-template-columns:repeat(2,1fr)}
+  /* os atalhos da carteira não empilham: grudados no alto, três linhas de
+     botão comeriam metade da tela. Ficam lado a lado, mais baixos. */
+  .tabs--views{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:5px;margin:20px -5px 16px}
+  .tabs--views .tab{justify-content:center;text-align:center;min-height:46px;padding:7px 8px;font-size:13.5px}
   .actions{flex-direction:column-reverse}
   .profilecard{padding:16px 16px 18px}
   .profilecard__head{flex-direction:column}
@@ -494,6 +511,11 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .allocrow__del{grid-column:3}
   .alloccat__rows{gap:16px}
   .invlegend__row{padding:7px 4px}
+  /* "Carteira sugerida para o seu perfil" não cabe num terço da tela: aqui
+     cada atalho usa o nome curto */
+  .tabs--views .tab{min-height:42px;padding:6px;font-size:13px}
+  .tab__full{display:none}
+  .tab__short{display:inline}
   /* a tabela da diferença aperta em vez de rolar de lado: as colunas soltam a
      largura fixa e "aumentar 17,5%" quebra em duas linhas */
   .difftable td,.difftable td:last-child{width:auto}
