@@ -59,6 +59,41 @@
       });
   }
 
+  /* ============ rascunho da etapa 2 ============ */
+  // No celular, trocar de aba pode descarregar a página, e tudo o que ela
+  // digitou e ainda não salvou some. Então cada mudança vai para o
+  // localStorage (uma chave por aluna) e volta quando a etapa 2 abrir de novo.
+  // O rascunho só é apagado quando os investimentos são salvos no banco.
+  var DRAFT_PREFIX = "rascunho-investimentos:";
+
+  function readDraft(userId) {
+    if (!userId) return null;
+    try {
+      var draft = JSON.parse(localStorage.getItem(DRAFT_PREFIX + userId));
+      return draft && typeof draft === "object" ? draft : null;
+    } catch (err) { return null; }
+  }
+
+  function writeDraft() {
+    if (!currentUser) return;
+    try { localStorage.setItem(DRAFT_PREFIX + currentUser.id, JSON.stringify(Investments.snapshot())); } catch (err) {}
+  }
+
+  function clearDraft() {
+    if (!currentUser) return;
+    try { localStorage.removeItem(DRAFT_PREFIX + currentUser.id); } catch (err) {}
+  }
+
+  // o rascunho, se houver; senão, o que está salvo no banco
+  function fillStep2() {
+    var draft = readDraft(currentUser && currentUser.id);
+    if (draft) {
+      Investments.restore(draft);
+    } else {
+      Investments.fill(currentProfile && currentProfile.investments);
+    }
+  }
+
   /* ============ etapa 1: perfil de investidor ============ */
   // cada perfil é um radio de verdade (setas do teclado e leitor de tela de
   // graça); o input fica invisível e o cartão ao lado mostra o estado marcado.
@@ -107,7 +142,7 @@
 
   /* ============ etapa 2: investimentos por categoria ============ */
   function goToStep2() {
-    Investments.fill(currentProfile && currentProfile.investments);
+    fillStep2();
     setFieldError("ob-alloc", "");
     setStep(2);
   }
@@ -125,7 +160,10 @@
       document.getElementById("ob-step2-finish"),
       FINISH_LABEL,
       "ob-alloc",
-      function () { if (onComplete) onComplete(); }
+      function () {
+        clearDraft();
+        if (onComplete) onComplete();
+      }
     );
   }
 
@@ -145,6 +183,7 @@
 
     Investments.mount(document.getElementById("ob-allocations"), function () {
       setFieldError("ob-alloc", "");
+      writeDraft();
     });
     document.getElementById("ob-step2-back").addEventListener("click", function () { setStep(1); });
     document.getElementById("ob-step2-finish").addEventListener("click", finish);
@@ -169,10 +208,14 @@
       return;
     }
     // a etapa 2 fica pronta desde já: se ela avançar, não pisca nada.
-    Investments.fill(profile && profile.investments);
+    fillStep2();
     setFieldError("ob-alloc", "");
     setStep(1);
   }
 
-  global.OnboardingView = { mount: mount, show: show };
+  global.OnboardingView = {
+    mount: mount,
+    show: show,
+    hasDraft: function (userId) { return !!readDraft(userId); }
+  };
 })(window);

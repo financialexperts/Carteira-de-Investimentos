@@ -281,6 +281,41 @@
     syncAllCategories();
   }
 
+  // Rascunho: a tela como está, inclusive linha pela metade e valor ainda sem
+  // formatar. Serve pra devolver tudo do jeito que estava se o celular
+  // descarregar a aba antes de ela salvar.
+  function snapshot() {
+    var items = {};
+    Classes.list.forEach(function (cat) {
+      items[cat.key] = [];
+      rowsOf(cat.key).forEach(function (row) {
+        var name = nameInput(row).value;
+        var value = valInput(row).value;
+        if (name.trim() || value.trim()) items[cat.key].push({ name: name, value: value });
+      });
+    });
+    return { total: totalInput().value, items: items };
+  }
+
+  // O contrário de snapshot(): põe o rascunho de volta na tela.
+  function restore(draft) {
+    setCapNotice("");
+    totalInput().value = typeof draft.total === "string" ? draft.total : "";
+
+    Classes.list.forEach(function (cat) {
+      rowsEl(cat.key).innerHTML = "";
+      var items = draft.items && Array.isArray(draft.items[cat.key]) ? draft.items[cat.key] : [];
+      if (!items.length) addRow(cat.key, null, false);
+      items.forEach(function (item) {
+        addRow(cat.key, null, false);
+        var row = rowsEl(cat.key).lastElementChild;
+        nameInput(row).value = item && typeof item.name === "string" ? item.name : "";
+        valInput(row).value = item && typeof item.value === "string" ? item.value : "";
+      });
+    });
+    syncAllCategories();
+  }
+
   // Lê a tela. Devolve { data } ou { error } — linha totalmente em branco é
   // ignorada, linha pela metade é erro (senão some sem a aluna perceber).
   function read() {
@@ -373,6 +408,8 @@
   global.Investments = {
     mount: mount,
     fill: fill,
+    snapshot: snapshot,
+    restore: restore,
     read: read,
     parse: parse,
     isFilled: isFilled,

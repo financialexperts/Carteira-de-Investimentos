@@ -544,11 +544,19 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .alloccat__head{padding:9px 10px}
   .alloccat__name{font-size:15px}
 }
+/* ============ aviso de cookies ============ */
+.cookiebar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:50;width:min(640px,calc(100% - 32px));display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.cookiebar[hidden]{display:none}
+.cookiebar__text{margin:0;font-size:13px;line-height:1.5;color:var(--ink-soft)}
+@media (max-width:560px){
+  .cookiebar{flex-direction:column;align-items:stretch;bottom:12px;gap:10px}
+  .cookiebar .btn{width:100%}
+}
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
 }
 @media print{
-  .topbar,.actions,.chips,footer,.tabs,#pf-change,#pf-edit-inv{display:none}
+  .topbar,.actions,.chips,footer,.tabs,#pf-change,#pf-edit-inv,.cookiebar{display:none}
   body{background:#fff}
   .card{box-shadow:none}
 }

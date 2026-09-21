@@ -55,6 +55,9 @@
   // por cima do formulário de senha nova. Só sai daqui quando a senha for salva.
   var emRecuperacao = false;
 
+  // de quem é a tela que está aberta agora (null = ninguém logado)
+  var usuarioNaTela = null;
+
   function abrirRecuperacao() {
     emRecuperacao = true;
     showView("auth");
@@ -68,6 +71,8 @@
 
   function route(session) {
     if (emRecuperacao) return;
+
+    usuarioNaTela = session ? session.user.id : null;
 
     if (!session) {
       document.getElementById("userbox").hidden = true;
@@ -97,7 +102,10 @@
       }
       // escolheu o perfil mas ainda não montou a carteira: cai direto na
       // etapa 02, sem repetir a escolha do perfil.
-      if (!window.Investments.isFilled(profile)) {
+      // ou tem um rascunho que ainda não foi salvo (o celular descarregou a
+      // aba no meio da edição): volta pra etapa 02 com ele, em vez de
+      // esconder o que ele digitou atrás da carteira antiga.
+      if (!window.Investments.isFilled(profile) || window.OnboardingView.hasDraft(session.user.id)) {
         showOnboarding(session, profile, 2);
         return;
       }
@@ -116,6 +124,10 @@
     // poderia ser tirado do meio de uma escolha minutos depois, sem nenhuma
     // ação dele.
     if (event === "TOKEN_REFRESHED" || event === "USER_UPDATED") return;
+    // o Supabase também repete SIGNED_IN toda vez que a aba volta a ficar
+    // visível (no celular, é só ir em outra aba e voltar). Não é login novo:
+    // redesenhar aqui apagaria o que o aluno digitou e ainda não salvou.
+    if (event === "SIGNED_IN" && session && session.user.id === usuarioNaTela) return;
     route(session);
   });
 

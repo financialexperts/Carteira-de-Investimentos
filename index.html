@@ -308,6 +308,15 @@
   </div>
 </footer>
 
+<!-- aviso de cookies (LGPD): o cookies.js mostra só enquanto o aluno não clicar em "Entendi" -->
+<div class="cookiebar" id="cookie-banner" role="region" aria-label="Aviso de cookies" hidden>
+  <p class="cookiebar__text">
+    Usamos cookies e o armazenamento do navegador só para o sistema funcionar: manter você conectado,
+    lembrar o tema e guardar o rascunho da sua carteira até você salvar. Nada de rastreamento ou anúncios.
+  </p>
+  <button class="btn btn--primary glass btn--sm" id="cookie-ok" type="button">Entendi</button>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- assetClasses vem antes: investorProfiles confere a tabela de sugestões
      contra as categorias dele assim que carrega -->
@@ -316,6 +325,7 @@
 <script src="frontend/js/config.js"></script>
 <script src="frontend/js/supabaseClient.js"></script>
 <script src="frontend/js/format.js"></script>
+<script src="frontend/js/cookies.js"></script>
 <script src="frontend/js/auth.js"></script>
 <script src="frontend/js/investments.js"></script>
 <script src="frontend/js/onboarding.js"></script>
