@@ -185,7 +185,29 @@ Quando um aluno não consegue entrar, os caminhos são:
 - ele mesmo usa o "Esqueceu a senha?" na tela de login; ou
 - você vai em **Authentication → Users** no painel do Supabase, acha o e-mail e manda um link de recuperação.
 
-O link de recuperação volta para a página de onde o pedido saiu. Para isso funcionar, o endereço do app precisa estar em **Authentication → URL Configuration → Redirect URLs** — senão o Supabase manda o aluno para o **Site URL** do projeto.
+### O link do e-mail precisa estar configurado
+
+O app manda o endereço da página atual no `redirectTo`, mas **o Supabase só respeita isso se o endereço estiver na lista de permitidos**. Quando não bate, ele ignora em silêncio e usa o **Site URL** do projeto — e o aluno cai numa página que não existe (`ERR_CONNECTION_REFUSED`).
+
+Em **Authentication → URL Configuration**:
+
+- **Site URL** — o endereço publicado:
+  ```
+  https://financialexperts.github.io/Carteira-de-Investimentos/
+  ```
+
+- **Redirect URLs** — uma linha por lugar onde o app roda, com `/**` no fim:
+  ```
+  https://financialexperts.github.io/Carteira-de-Investimentos/**
+  http://localhost:5500/**
+  http://127.0.0.1:5500/**
+  ```
+  As duas últimas são para desenvolvimento; troque a porta pela que o seu servidor local usa.
+
+Dois detalhes que costumam travar isso:
+
+- **Abrir o `index.html` pelo `file://` nunca funciona.** O `redirectTo` vira um caminho de arquivo e o Supabase recusa. Tem que servir por HTTP.
+- **Mudar a configuração não conserta e-mails já enviados.** O link antigo continua apontando para onde apontava; é preciso pedir um novo.
 
 ---
 

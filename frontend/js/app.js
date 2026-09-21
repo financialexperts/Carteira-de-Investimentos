@@ -48,12 +48,27 @@
   var db = window.DB.client;
 
   /* ============ roteamento por sessão ============ */
+  // O link de "esqueci a senha" chega com o token no #, e o Supabase cria uma
+  // sessão de verdade com ele antes de avisar PASSWORD_RECOVERY. Sem essa
+  // trava, o getSession() lá embaixo (e a consulta a profiles, que é assíncrona)
+  // veriam essa mesma sessão e mandariam a aluna direto pra carteira, passando
+  // por cima do formulário de senha nova. Só sai daqui quando a senha for salva.
+  var emRecuperacao = false;
+
+  function abrirRecuperacao() {
+    emRecuperacao = true;
+    showView("auth");
+    window.AuthView.showRecovery();
+  }
+
   function showOnboarding(session, profile, step) {
     showView("onboarding");
     window.OnboardingView.show(session.user, profile, step, function () { route(session); });
   }
 
   function route(session) {
+    if (emRecuperacao) return;
+
     if (!session) {
       document.getElementById("userbox").hidden = true;
       window.AuthView.reset();
@@ -66,6 +81,10 @@
     document.getElementById("userbox").hidden = false;
 
     db.from("profiles").select("*").eq("id", session.user.id).single().then(function (res) {
+      // a consulta pode voltar depois do PASSWORD_RECOVERY ter aberto o
+      // formulário de senha nova; nesse caso não é pra navegar pra lugar nenhum
+      if (emRecuperacao) return;
+
       var profile = res.data;
       if (!metaName && profile && profile.full_name) {
         document.getElementById("userbox-email").textContent = profile.full_name;
@@ -89,8 +108,7 @@
 
   db.auth.onAuthStateChange(function (event, session) {
     if (event === "PASSWORD_RECOVERY") {
-      showView("auth");
-      window.AuthView.showRecovery();
+      abrirRecuperacao();
       return;
     }
     // TOKEN_REFRESHED dispara sozinho em segundo plano pra renovar a sessão,
@@ -106,7 +124,12 @@
   });
 
   window.App = {
-    refresh: function () { db.auth.getSession().then(function (res) { route(res.data.session); }); }
+    // chamado pelo auth.js depois de salvar a senha nova: é o fim da
+    // recuperação, então a navegação normal volta a valer
+    refresh: function () {
+      emRecuperacao = false;
+      db.auth.getSession().then(function (res) { route(res.data.session); });
+    }
   };
 
   window.AuthView.mount();
