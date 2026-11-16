@@ -8,7 +8,7 @@ Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css
 
 ## O caminho do aluno
 
-1. **Entrar.** Login com e-mail e senha. Quem ainda não tem conta cria uma na mesma tela, e quem esqueceu a senha recebe um link por e-mail.
+1. **Entrar.** Login com a conta do Google ou com e-mail e senha. Quem ainda não tem conta cria uma na mesma tela (pelo Google, ela já sai criada no primeiro clique), e quem esqueceu a senha recebe um link por e-mail.
 
 2. **Etapa 01 — Seu perfil.** Ele escolhe entre **Conservador**, **Moderado** e **Arrojado**. Cada opção mostra só o nome e o nível de risco, num medidor de três barrinhas.
 
@@ -87,6 +87,7 @@ frontend/
   js/supabaseClient.js          inicializa o cliente Supabase
   js/format.js                  formatação de dinheiro e leitura do que foi digitado
   js/auth.js                    entrar / criar conta / esqueci a senha
+  js/google-auth.js             o botão "Continuar com o Google" (o mesmo em todos os sistemas)
   js/investments.js             a etapa 02: monta as tabelas, soma, limita e valida
   js/onboarding.js              as duas etapas e o que é salvo em cada uma
   js/portfolio.js               a carteira: as duas roscas e suas legendas
@@ -212,6 +213,12 @@ Dois detalhes que costumam travar isso:
 
 - **Abrir o `index.html` pelo `file://` nunca funciona.** O `redirectTo` vira um caminho de arquivo e o Supabase recusa. Tem que servir por HTTP.
 - **Mudar a configuração não conserta e-mails já enviados.** O link antigo continua apontando para onde apontava; é preciso pedir um novo.
+
+### Entrar com o Google
+
+O botão **Continuar com o Google**, no alto de entrar e de criar conta, usa o mesmo `redirectTo` (e a mesma lista de **Redirect URLs** acima) para voltar para a carteira. Quem ainda não tinha conta ganha uma na hora, com o nome da conta do Google; quem já tinha conta com o mesmo e-mail entra nela mesma.
+
+Além disso, o Google precisa estar ligado em **Authentication → Sign In / Providers → Google**, com o Client ID e o Client Secret de um cliente OAuth do Google Cloud (que tem que ter `https://xorqsuqjmvkyzgagdxfz.supabase.co/auth/v1/callback` em *URIs de redirecionamento autorizados*). Enquanto ele estiver desligado, o botão só avisa que o login com o Google ainda não está disponível.
 
 ---
 
