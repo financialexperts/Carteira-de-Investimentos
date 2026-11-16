@@ -27,6 +27,7 @@
     el.classList.toggle("is-on", !!msg);
   }
   function clearMsgs() {
+    pendingLinkError = null;
     ["login-err", "signup-err", "forgot-err", "forgot-ok", "newpass-err"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) { el.textContent = ""; el.classList.remove("is-on"); }
@@ -132,17 +133,21 @@
     });
   }
 
-  // Aviso da volta do Google com erro, guardado até a tela de login
-  // aparecer, senão o clearMsgs() do reset() apagaria a mensagem antes do
-  // usuário ver.
+  // Aviso de link inválido (a volta do Google com erro), guardado até a
+  // tela de login aparecer, senão o clearMsgs() do reset() apagaria a
+  // mensagem antes do usuário ver. Ele fica na tela até a pessoa mexer nela
+  // (trocar de aba, enviar um formulário): ao abrir a página, o reset() roda
+  // mais de uma vez (pelo onAuthStateChange e pelo getSession) e o segundo
+  // apagava o aviso.
   var pendingLinkError = null;
 
   function reset() {
+    var linkMsg = pendingLinkError;
     clearMsgs();
     document.getElementById("pane-login").reset();
     document.getElementById("pane-signup").reset();
     showPane("login");
-    if (pendingLinkError) { setMsg("login-err", pendingLinkError); pendingLinkError = null; }
+    if (linkMsg) { pendingLinkError = linkMsg; setMsg("login-err", linkMsg); }
   }
 
   function showRecovery() {
