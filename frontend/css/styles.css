@@ -28,27 +28,33 @@
   --icon-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3 8.5l3.2 3.2L13 4.5'/%3E%3C/svg%3E");
   --icon-warning:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M8 1.6 15 14H1L8 1.6z'/%3E%3Cpath stroke='%23000' stroke-width='1.6' stroke-linecap='round' d='M8 6.4v3.4'/%3E%3Ccircle cx='8' cy='12.1' r='.9' fill='%23000'/%3E%3C/svg%3E");
 }
+/* Tema escuro: os mesmos tons do Sistema de Presença, os cinzas-grafite do
+   macOS (fundo quase preto, cartões em grafite, texto branco-gelo e cinzas
+   neutros), no lugar do azul-marinho. O verde da marca continua o mesmo; os
+   fundos suaves (selos, quadrinhos, anel de foco) são a própria cor
+   misturada no cartão. */
 [data-theme="dark"]{
-  --bg:#0F0C29;
-  --bg-grid:rgba(60,239,162,.05);
-  --surface:#1D1A43;
-  --surface-2:#171435;
-  --ink:#EDEDF7;
-  --ink-soft:#C7C5E0;
-  --muted:#9E9CB4;
-  --line:#2A2860;
-  --line-strong:#3B3878;
+  color-scheme:dark;
+  --bg:#111113;
+  --bg-grid:rgba(255,255,255,.035);
+  --surface:#1C1C1E;
+  --surface-2:#212123;
+  --ink:#F5F5F7;
+  --ink-soft:#C7C7CC;
+  --muted:#A1A1A6;
+  --line:#38383A;
+  --line-strong:#48484A;
   --accent:#3CEFA2;
   --accent-hover:#33CB8A;
   --accent-ink:#5FF5B7;
-  --accent-soft:#162E3B;
-  --accent-contrast:#0B0920;
-  --warm:#E39B57;
-  --warm-soft:#33251A;
-  --danger:#F08379;
+  --accent-soft:color-mix(in srgb,var(--accent) 16%,var(--surface));
+  --accent-contrast:#111113;
+  --warm:#FF9F0A;
+  --warm-soft:color-mix(in srgb,var(--warm) 16%,var(--surface));
+  --danger:#FF453A;
   --focus:#3CEFA2;
-  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
-  --shadow:0 1px 2px rgba(0,0,0,.35), 0 16px 34px -22px rgba(0,0,0,.9);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 34px -22px rgba(0,0,0,.9);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -177,6 +183,22 @@ input{font:inherit}
 .btn--danger{background:var(--danger);border-color:var(--danger);color:#fff}
 .btn--danger:hover{background:color-mix(in srgb,var(--danger) 85%,black);border-color:color-mix(in srgb,var(--danger) 85%,black)}
 .linklike{display:block;margin:14px auto 0;background:none;border:0;padding:2px;color:var(--accent-ink);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- Continuar com o Google ---------- */
+/* O botão do Google no alto de "Entrar" e de "Criar conta" (google-auth.js)
+   e a linha "ou" entre ele e o formulário de e-mail. Tem a altura, o canto e
+   a letra dos outros botões e segue o tema; só o "G" é do Google, com as
+   quatro cores oficiais (não muda nem no escuro). Enquanto a tela do Google
+   abre, o "G" vira um círculo girando. */
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--line-strong);border-radius:11px;background:var(--surface);box-shadow:var(--shadow-sm);color:var(--ink);font-family:var(--ff-body);font-weight:600;font-size:14.5px;line-height:1.5;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s,border-color .2s,box-shadow .25s,transform .4s cubic-bezier(.34,1.56,.64,1)}
+@media (hover:hover){.gbtn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 5%,var(--surface));border-color:color-mix(in srgb,var(--ink) 22%,var(--line-strong));box-shadow:var(--shadow)}}
+.gbtn:active:not(:disabled){transform:scale(.98)}
+.gbtn:disabled{cursor:progress}
+.gbtn__logo{flex:none;width:18px;height:18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat}
+.gbtn.is-loading .gbtn__logo{background:none;border:2px solid var(--line-strong);border-top-color:var(--accent-ink);border-radius:50%;animation:spin .7s linear infinite}
+.gbtn__text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.authsep{display:flex;align-items:center;gap:12px;margin:18px 0;font-family:var(--ff-mono);font-size:11px;line-height:1;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.authsep::before,.authsep::after{content:"";flex:1;height:1px;background:var(--line)}
 
 /* ---------- Tabs ---------- */
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:26px 0 22px;border-top:1px solid var(--line);padding-top:22px}
@@ -421,7 +443,7 @@ input{font:inherit}
    não existe fatia de "−30%". Os três números lado a lado é o que responde. O
    pontinho ao lado do nome repete a cor que a categoria tem nas outras abas. */
 .diffchart{margin-top:20px;--aumentar:#21867A;--diminuir:#B3322A}
-[data-theme="dark"] .diffchart{--aumentar:#5FF5B7;--diminuir:#F08379}
+[data-theme="dark"] .diffchart{--aumentar:#5FF5B7;--diminuir:#FF453A}
 .difftable__resumo{font-size:15.5px;line-height:1.5;color:var(--ink-soft)}
 .difftable__resumo strong{color:var(--ink);font-family:var(--ff-mono);font-size:17px}
 

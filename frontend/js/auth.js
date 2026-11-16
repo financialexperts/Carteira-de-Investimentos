@@ -132,11 +132,17 @@
     });
   }
 
+  // Aviso da volta do Google com erro, guardado até a tela de login
+  // aparecer, senão o clearMsgs() do reset() apagaria a mensagem antes do
+  // usuário ver.
+  var pendingLinkError = null;
+
   function reset() {
     clearMsgs();
     document.getElementById("pane-login").reset();
     document.getElementById("pane-signup").reset();
     showPane("login");
+    if (pendingLinkError) { setMsg("login-err", pendingLinkError); pendingLinkError = null; }
   }
 
   function showRecovery() {
@@ -144,5 +150,9 @@
     showPane("newpass");
   }
 
-  global.AuthView = { mount: mount, reset: reset, showRecovery: showRecovery };
+  function showLinkError(msg) {
+    pendingLinkError = msg;
+  }
+
+  global.AuthView = { mount: mount, reset: reset, showRecovery: showRecovery, showLinkError: showLinkError };
 })(window);

@@ -58,7 +58,7 @@
   <section id="view-auth" class="panel auth" hidden>
     <div class="auth__intro">
       <h1>Comece a investir<br>do seu jeito.</h1>
-      <p>Entre com seu e-mail para descobrir seu perfil de investidor e montar sua carteira.</p>
+      <p>Entre com o Google ou com seu e-mail para descobrir seu perfil de investidor e montar sua carteira.</p>
     </div>
 
     <div class="card auth__card">
@@ -69,6 +69,11 @@
 
       <!-- ---- entrar ---- -->
       <form id="pane-login" role="tabpanel" aria-labelledby="tab-login" class="card__body" novalidate>
+        <button class="gbtn" type="button" data-google data-err="login-err">
+          <span class="gbtn__logo" aria-hidden="true"></span>
+          <span class="gbtn__text">Continuar com o Google</span>
+        </button>
+        <p class="authsep" aria-hidden="true">ou</p>
         <div class="field">
           <label for="login-email">E-mail</label>
           <div class="input" id="login-email-box">
@@ -90,6 +95,11 @@
 
       <!-- ---- criar conta ---- -->
       <form id="pane-signup" role="tabpanel" aria-labelledby="tab-signup" class="card__body" hidden novalidate>
+        <button class="gbtn" type="button" data-google data-err="signup-err">
+          <span class="gbtn__logo" aria-hidden="true"></span>
+          <span class="gbtn__text">Continuar com o Google</span>
+        </button>
+        <p class="authsep" aria-hidden="true">ou</p>
         <div class="field">
           <label for="signup-name">Nome completo</label>
           <div class="input" id="signup-name-box">
@@ -327,6 +337,7 @@
 <script src="frontend/js/format.js"></script>
 <script src="frontend/js/cookies.js"></script>
 <script src="frontend/js/auth.js"></script>
+<script src="frontend/js/google-auth.js"></script>
 <script src="frontend/js/investments.js"></script>
 <script src="frontend/js/onboarding.js"></script>
 <script src="frontend/js/portfolio.js"></script>

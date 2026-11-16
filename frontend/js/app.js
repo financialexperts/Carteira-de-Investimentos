@@ -13,7 +13,7 @@
   var metaTheme = document.getElementById("meta-theme-color");
   function syncThemeColor() {
     if (!metaTheme) return;
-    metaTheme.setAttribute("content", root.getAttribute("data-theme") === "dark" ? "#171435" : "#F7F7FA");
+    metaTheme.setAttribute("content", root.getAttribute("data-theme") === "dark" ? "#19191B" : "#F7F7FA");
   }
   var stored = null;
   try { stored = localStorage.getItem("tema"); } catch (err) { stored = null; }
@@ -147,6 +147,8 @@
   window.AuthView.mount();
   window.OnboardingView.mount();
   window.PortfolioView.mount();
+
+  if (window.DB.linkError) window.AuthView.showLinkError(window.DB.linkError);
 
   showView("loading");
   db.auth.getSession().then(function (res) { route(res.data.session); });
